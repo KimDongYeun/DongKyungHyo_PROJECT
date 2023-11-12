@@ -14,4 +14,34 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="canvas.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="jjuggumi.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="keyin.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="sample.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="canvas.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="jjuggumi.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="keyin.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="jjuggumi.dat">
+      <Filter>리소스 파일</Filter>
+    </None>
+  </ItemGroup>
 </Project>
