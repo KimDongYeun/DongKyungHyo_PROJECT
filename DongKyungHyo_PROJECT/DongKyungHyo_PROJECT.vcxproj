@@ -131,6 +131,7 @@
     <ClCompile Include="jjuggumi.c" />
     <ClCompile Include="keyin.c" />
     <ClCompile Include="mugunghwa.c" />
+    <ClCompile Include="nightgame.c" />
     <ClCompile Include="sample.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
