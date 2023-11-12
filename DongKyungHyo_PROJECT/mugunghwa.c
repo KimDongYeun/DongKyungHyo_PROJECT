@@ -44,7 +44,7 @@ period[PLAYER_MAX] = {0,100,230,200,250,160,220,240,130,260};
 void one_survive(void) // 한명 살아남은 경우
 {
 	for (int i = 0; i < n_player; i++) {
-		winner_num += player[i];
+		winner_num += player[i].is_alive;
 	}
 		if (winner_num == 1) {
 			display();
@@ -223,7 +223,7 @@ void Younghee_turn(void) {
 	turntime = endtime - starttime;
 	if (turntime == 0) {                            
 		for (int i = 0; i < n_player; i++) {
-			if (player[i] == false) {
+			if (player[i].is_alive == false) {
 				back_buf[py[i]][px[i]] = ' ';
 				round_out++;
 			}
@@ -287,7 +287,7 @@ void move_0(int key) {
 	else {
 		if (key == K_UP || key == K_DOWN || key == K_LEFT || key == K_RIGHT) {
 			move_manual(key);
-			player[0] = false;
+			player[0].is_alive = false;
 			out_player[out] = '0';
 			out += 2;
 			can_behind = 0;
@@ -315,7 +315,7 @@ void move_other(void)
 					behind = 0;
 				}
 				else {
-					player[i] = false;
+					player[i].is_alive = false;
 					flag[i] = 1;
 					out_player[out] = '0' + i;
 					out += 2;
@@ -353,7 +353,7 @@ void mugunghwa(void) {
 				one_survive();
 			}
 			else {
-				if (player[0] == true) {
+				if (player[0].is_alive == true) {
 					move_manual(key);
 				}
 			}

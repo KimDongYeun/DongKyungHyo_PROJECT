@@ -28,7 +28,7 @@ void printxy(char ch, int col, int row) {
 
 void left_player(void) {
 	for (int i = 0; i < n_player; i++) {
-		if (player[i] == false) {
+		if (player[i].is_alive == false) {
 			back_buf[py[i]][px[i]] = ' ';
 		}
 	}
@@ -84,8 +84,14 @@ void draw(void) {
 
 void print_status(void) {
 	printf("no. of players left: %d\n", n_alive);
+	printf("                     intl      str      stm\n");
 	for (int p = 0; p < n_player; p++) {
-		printf("player %2d: %5s\n", p, player[p] ? "alive" : "DEAD");
+		if (player[p].intel >= 10) { // ÁÂ¿ìÁ¤·Ä
+			printf("player %2d: %5s     %d(%s%d)    %d(%s%d)     %d%%\n", p, player[p].is_alive ? "alive" : "DEAD", player[p].intel, player[p].item.intel_buf >=0 ? "+" : "-", player[p].item.intel_buf, player[p].str, player[p].item.str_buf >= 0 ? "+" : "-", player[p].item.str_buf, player[p].stamina);
+		}
+		else {
+			printf("player %2d: %5s      %d(%s%d)    %d(%s%d)     %d%%\n", p, player[p].is_alive ? "alive" : "DEAD", player[p].intel, player[p].item.intel_buf >= 0 ? "+" : "-", player[p].item.intel_buf, player[p].str, player[p].item.str_buf >= 0 ? "+" : "-", player[p].item.str_buf, player[p].stamina);
+		}
 	}
 }
 
@@ -116,8 +122,8 @@ void ending(void) {
 	int left_player = 0;
 	int winner_count = 0;
 	for (int i = 0; i < n_player; i++) {
-		winner_count += player[i];
-		if (player[i]) {
+		winner_count += player[i].is_alive;
+		if (player[i].is_alive) {
 			winner = i;
 		}
 	}
@@ -131,7 +137,7 @@ void ending(void) {
 	}
 	else {
 		for (int i = 0; i < n_player; i++) {
-			if (player[i]) {
+			if (player[i].is_alive) {
 				printf("player%d ", i);
 			}
 		}
