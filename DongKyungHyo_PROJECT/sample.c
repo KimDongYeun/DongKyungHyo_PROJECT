@@ -3,10 +3,10 @@
 #include "keyin.h"
 #include <stdio.h>
 
-#define DIR_UP		0
-#define DIR_DOWN	1
-#define DIR_LEFT	2
-#define DIR_RIGHT	3
+#define DIR_UP		2
+#define DIR_DOWN	3
+#define DIR_LEFT	1
+#define DIR_RIGHT	0
 
 void sample_init(void);
 void move_manual(key_t key);
@@ -21,14 +21,14 @@ void sample_init(void) {
 	for (int i = 0; i < n_player; i++) {
 		// 같은 자리가 나오면 다시 생성
 		do {
-			x = randint(1, N_ROW - 2);
-			y = randint(1, N_COL - 2);
+			y = randint(1, N_ROW - 2);
+			x = randint(1, N_COL - 2);
 		} while (!placable(x, y));
 		px[i] = x;
 		py[i] = y;
 		period[i] = randint(100, 500);
 
-		back_buf[px[i]][py[i]] = '0' + i;  // (0 .. n_player-1)
+		back_buf[py[i]][px[i]] = '0' + i;  // (0 .. n_player-1)
 	}
 
 	tick = 0;
@@ -36,7 +36,7 @@ void sample_init(void) {
 
 void move_manual(key_t key) {
 	// 각 방향으로 움직일 때 x, y값 delta
-	static int dx[4] = { -1, 1, 0, 0 };
+	static int dx[4] = { 1, -1, 0, 0 };
 	static int dy[4] = { 0, 0, -1, 1 };
 
 	int dir;  // 움직일 방향(0~3)
@@ -44,7 +44,7 @@ void move_manual(key_t key) {
 	case K_UP: dir = DIR_UP; break;
 	case K_DOWN: dir = DIR_DOWN; break;
 	case K_LEFT: dir = DIR_LEFT; break;
-	case K_RIGHT: dir = DIR_RIGHT; break;	
+	case K_RIGHT: dir = DIR_RIGHT; break;
 	default: return;
 	}
 
@@ -77,8 +77,8 @@ void move_random(int player, int dir) {
 // back_buf[][]에 기록
 void move_tail(int player, int nx, int ny) {
 	int p = player;  // 이름이 길어서...
-	back_buf[nx][ny] = back_buf[px[p]][py[p]];
-	back_buf[px[p]][py[p]] = ' ';
+	back_buf[ny][nx] = back_buf[py[p]][px[p]];
+	back_buf[py[p]][px[p]] = ' ';
 	px[p] = nx;
 	py[p] = ny;
 }
