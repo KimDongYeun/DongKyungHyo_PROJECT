@@ -29,7 +29,7 @@ void nightgame_init(void) {
 		} while (!placable(x, y));
 		px[survive_p[i]] = x;
 		py[survive_p[i]] = y;
-		period[survive_p[i]] = randint(10, 30);
+		period[survive_p[i]] = randint(100, 200);
 
 		back_buf[py[survive_p[i]]][px[survive_p[i]]] = '0' + survive_p[i];  // (0 .. n_player-1)
 	}
@@ -107,8 +107,7 @@ void move_rand(int playerr, int dir) {
 							flag = 1;
 						}
 					}
-					else if (back_buf[py[p] + j][px[p] + i] == '0' + survive_p[k]&&flag==0) {
-						if (player[survive_p[k]].hasitem == true) {
+					else if (back_buf[py[p] + j][px[p] + i] == '0' + survive_p[k]&& player[survive_p[k]].hasitem == true&&flag==0) {
 							nx = px[p] + i;
 							ny = py[p];
 							flag = 1;
@@ -117,7 +116,6 @@ void move_rand(int playerr, int dir) {
 								ny = py[p] + j;
 								flag = 1;
 							}
-						}
 					}
 				}
 			}
@@ -130,12 +128,10 @@ void move_rand(int playerr, int dir) {
 						ny = py[p] - 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] - 2] == '0' + survive_p[k]&&flag==0) {
-						if (player[survive_p[k]].hasitem == true) {
+					else if (back_buf[py[p] + i][px[p] - 2] == '0' + survive_p[k]&& player[survive_p[k]].hasitem == true&&flag==0) {
 							nx = px[p] - 1;
 							ny = py[p] - 1;
 							flag = 1;
-						}
 					}
 				}
 			}
@@ -145,12 +141,10 @@ void move_rand(int playerr, int dir) {
 					ny = py[p];
 					flag = 1;
 				}
-				else if (back_buf[py[p]][px[p] - 2] == '0' + survive_p[k] && flag == 0) {
-					if (player[survive_p[k]].hasitem == true) {
+				else if (back_buf[py[p]][px[p] - 2] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true&& flag == 0) {
 						nx = px[p] - 1;
 						ny = py[p];
 						flag = 1;
-					}
 				}
 			}
 			for (int i = 1; i <=2; i++) {
@@ -160,7 +154,7 @@ void move_rand(int playerr, int dir) {
 						ny = py[p] + 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] - 2] == '0' + survive_p[k] && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] - 2] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 						nx = px[p] - 1;
 						ny = py[p] + 1;
 						flag = 1;
@@ -174,7 +168,7 @@ void move_rand(int playerr, int dir) {
 						ny = py[p] - 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] + 2] == '0' + survive_p[k] && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] + 2] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 						nx = px[p] + 1;
 						ny = py[p] - 1;
 						flag = 1;
@@ -187,7 +181,7 @@ void move_rand(int playerr, int dir) {
 					ny = py[p];
 					flag = 1;
 				}
-				else if (back_buf[py[p]][px[p] + 2] == '0' + survive_p[k] && flag == 0) {
+				else if (back_buf[py[p]][px[p] + 2] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 					nx = px[p] + 1;
 					ny = py[p];
 					flag = 1;
@@ -200,7 +194,7 @@ void move_rand(int playerr, int dir) {
 						ny = py[p] + 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] + 2] == '0' + survive_p[k] && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] + 2] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 						nx = px[p] + 1;
 						ny = py[p] + 1;
 						flag = 1;
@@ -214,7 +208,7 @@ void move_rand(int playerr, int dir) {
 						ny = py[p] - 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] - 2][px[p] + i] == '0' + survive_p[k] && flag == 0) {
+					else if (back_buf[py[p] - 2][px[p] + i] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 						nx = px[p];
 						ny = py[p] - 1;
 						flag = 1;
@@ -228,7 +222,7 @@ void move_rand(int playerr, int dir) {
 						ny = py[p] + 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + 2][px[p] + i] == '0' + survive_p[k] && flag == 0) {
+					else if (back_buf[py[p] + 2][px[p] + i] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 						nx = px[p];
 						ny = py[p] + 1;
 						flag = 1;
@@ -244,7 +238,7 @@ void move_rand(int playerr, int dir) {
 						ny = py[p] - 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] - 3] == '0' + survive_p[k] && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] - 3] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 						nx = px[p] - 1;
 						ny = py[p] - 1;
 						flag = 1;
@@ -257,7 +251,7 @@ void move_rand(int playerr, int dir) {
 					ny = py[p];
 					flag = 1;
 				}
-				else if (back_buf[py[p]][px[p] - 3] == '0' + survive_p[k] && flag == 0) {
+				else if (back_buf[py[p]][px[p] - 3] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 					nx = px[p] - 1;
 					ny = py[p];
 					flag = 1;
@@ -270,7 +264,7 @@ void move_rand(int playerr, int dir) {
 						ny = py[p] + 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] - 3] == '0' + survive_p[k] && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] - 3] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 						nx = px[p] - 1;
 						ny = py[p] + 1;
 						flag = 1;
@@ -284,7 +278,7 @@ void move_rand(int playerr, int dir) {
 						ny = py[p] - 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] + 3] == '0' + survive_p[k] && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] + 3] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 						nx = px[p] + 1;
 						ny = py[p] - 1;
 						flag = 1;
@@ -297,7 +291,7 @@ void move_rand(int playerr, int dir) {
 					ny = py[p];
 					flag = 1;
 				}
-				else if (back_buf[py[p]][px[p] + 3] == '0' + survive_p[k] && flag == 0) {
+				else if (back_buf[py[p]][px[p] + 3] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 					nx = px[p] + 1;
 					ny = py[p];
 					flag = 1;
@@ -310,7 +304,7 @@ void move_rand(int playerr, int dir) {
 						ny = py[p] + 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] + 3] == '0' + survive_p[k] && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] + 3] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 						nx = px[p] + 1;
 						ny = py[p] + 1;
 						flag = 1;
@@ -324,7 +318,7 @@ void move_rand(int playerr, int dir) {
 						ny = py[p] - 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] - 3][px[p] + i] == '0' + survive_p[k] && flag == 0) {
+					else if (back_buf[py[p] - 3][px[p] + i] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 						nx = px[p];
 						ny = py[p] - 1;
 						flag = 1;
@@ -338,7 +332,7 @@ void move_rand(int playerr, int dir) {
 						ny = py[p] + 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + 3][px[p] + i] == '0' + survive_p[k] && flag == 0) {
+					else if (back_buf[py[p] + 3][px[p] + i] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 						nx = px[p];
 						ny = py[p] + 1;
 						flag = 1;
@@ -354,7 +348,7 @@ void move_rand(int playerr, int dir) {
 						ny = py[p] - 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] - 4] == '0' + survive_p[k] && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] - 4] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 						nx = px[p] - 1;
 						ny = py[p] - 1;
 						flag = 1;
@@ -367,7 +361,7 @@ void move_rand(int playerr, int dir) {
 					ny = py[p];
 					flag = 1;
 				}
-				else if (back_buf[py[p]][px[p] - 4] == '0' + survive_p[k] && flag == 0) {
+				else if (back_buf[py[p]][px[p] - 4] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 					nx = px[p] - 1;
 					ny = py[p];
 					flag = 1;
@@ -380,7 +374,7 @@ void move_rand(int playerr, int dir) {
 						ny = py[p] + 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] - 4] == '0' + survive_p[k] && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] - 4] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 						nx = px[p] - 1;
 						ny = py[p] + 1;
 						flag = 1;
@@ -394,7 +388,7 @@ void move_rand(int playerr, int dir) {
 						ny = py[p] - 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] + 4] == '0' + survive_p[k] && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] + 4] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 						nx = px[p] + 1;
 						ny = py[p] - 1;
 						flag = 1;
@@ -407,7 +401,7 @@ void move_rand(int playerr, int dir) {
 					ny = py[p];
 					flag = 1;
 				}
-				else if (back_buf[py[p]][px[p] + 4] == '0' + survive_p[k] && flag == 0) {
+				else if (back_buf[py[p]][px[p] + 4] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 					nx = px[p] + 1;
 					ny = py[p];
 					flag = 1;
@@ -420,7 +414,7 @@ void move_rand(int playerr, int dir) {
 						ny = py[p] + 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] + 4] == '0' + survive_p[k] && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] + 4] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 						nx = px[p] + 1;
 						ny = py[p] + 1;
 						flag = 1;
@@ -434,7 +428,7 @@ void move_rand(int playerr, int dir) {
 						ny = py[p] - 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] - 4][px[p] + i] == '0' + survive_p[k] && flag == 0) {
+					else if (back_buf[py[p] - 4][px[p] + i] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 						nx = px[p];
 						ny = py[p] - 1;
 						flag = 1;
@@ -448,7 +442,7 @@ void move_rand(int playerr, int dir) {
 						ny = py[p] + 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + 4][px[p] + i] == '0' + survive_p[k] && flag == 0) {
+					else if (back_buf[py[p] + 4][px[p] + i] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 						nx = px[p];
 						ny = py[p] + 1;
 						flag = 1;
@@ -464,7 +458,7 @@ void move_rand(int playerr, int dir) {
 						ny = py[p] - 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] - 5] == '0' + survive_p[k] && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] - 5] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 						nx = px[p] - 1;
 						ny = py[p] - 1;
 						flag = 1;
@@ -477,7 +471,7 @@ void move_rand(int playerr, int dir) {
 					ny = py[p];
 					flag = 1;
 				}
-				else if (back_buf[py[p]][px[p] - 5] == '0' + survive_p[k] && flag == 0) {
+				else if (back_buf[py[p]][px[p] - 5] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 					nx = px[p] - 1;
 					ny = py[p];
 					flag = 1;
@@ -490,7 +484,7 @@ void move_rand(int playerr, int dir) {
 						ny = py[p] + 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] - 5] == '0' + survive_p[k] && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] - 5] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 						nx = px[p] - 1;
 						ny = py[p] + 1;
 						flag = 1;
@@ -504,7 +498,7 @@ void move_rand(int playerr, int dir) {
 						ny = py[p] - 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] + 5] == '0' + survive_p[k] && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] + 5] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 						nx = px[p] + 1;
 						ny = py[p] - 1;
 						flag = 1;
@@ -517,7 +511,7 @@ void move_rand(int playerr, int dir) {
 					ny = py[p];
 					flag = 1;
 				}
-				else if (back_buf[py[p]][px[p] + 5] == '0' + survive_p[k] && flag == 0) {
+				else if (back_buf[py[p]][px[p] + 5] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 					nx = px[p] + 1;
 					ny = py[p];
 					flag = 1;
@@ -530,7 +524,7 @@ void move_rand(int playerr, int dir) {
 						ny = py[p] + 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] + 5] == '0' + survive_p[k] && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] + 5] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 						nx = px[p] + 1;
 						ny = py[p] + 1;
 						flag = 1;
@@ -544,7 +538,7 @@ void move_rand(int playerr, int dir) {
 						ny = py[p] - 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] - 5][px[p] + i] == '0' + survive_p[k] && flag == 0) {
+					else if (back_buf[py[p] - 5][px[p] + i] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 						nx = px[p];
 						ny = py[p] - 1;
 						flag = 1;
@@ -558,7 +552,7 @@ void move_rand(int playerr, int dir) {
 						ny = py[p] + 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + 5][px[p] + i] == '0' + survive_p[k] && flag == 0) {
+					else if (back_buf[py[p] + 5][px[p] + i] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 						nx = px[p];
 						ny = py[p] + 1;
 						flag = 1;
@@ -576,7 +570,7 @@ void move_rand(int playerr, int dir) {
 							flag = 1;
 							break;
 						}
-						else if (back_buf[py[p] + i][px[p] + j] == '0' + survive_p[k] && flag == 0) {
+						else if (back_buf[py[p] + i][px[p] + j] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 							nx = px[p] + 1;
 							ny = py[p];
 							flag = 1;
@@ -594,7 +588,7 @@ void move_rand(int playerr, int dir) {
 							flag = 1;
 							break;
 						}
-						else if (back_buf[py[p] + i][px[p] - j] == '0' + survive_p[k] && flag == 0) {
+						else if (back_buf[py[p] + i][px[p] - j] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
 							nx = px[p] - 1;
 							ny = py[p];
 							flag = 1;
@@ -606,286 +600,7 @@ void move_rand(int playerr, int dir) {
 				if (flag == 1) { break; }
 			}
 		}
-		if (flag == 0) {//왼 or 오른쪽 7칸에 I 존재시 이동
-			for (int i = -5; i <= 5; i++) {
-				for (int k = 0; k < cnt; k++) {
-					if (back_buf[py[p] + i][px[p] + 7] == 'I') {
-						nx = px[p] + 1;
-						ny = py[p];
-						flag = 1;
-					}
-					else if (back_buf[py[p] + i][px[p] + 7] == '0' + survive_p[k] && flag == 0) {
-						nx = px[p] + 1;
-						ny = py[p];
-						flag = 1;
-					}
-				}
-			}
-			for (int i = -5; i <= 5; i++) {
-				for (int k = 0; k < cnt; k++) {
-					if (back_buf[py[p] + i][px[p] - 7] == 'I') {
-						nx = px[p] - 1;
-						ny = py[p];
-						flag = 1;
-					}
-					else if (back_buf[py[p] + i][px[p] - 7] == '0' + survive_p[k] && flag == 0) {
-						nx = px[p] - 1;
-						ny = py[p];
-						flag = 1;
-					}
-				}
-			}
-		}
-		if (flag == 0) {//왼 or 오른쪽 8칸에 I 존재시 이동
-			for (int i = -5; i <= 5; i++) {
-				for (int k = 0; k < cnt; k++) {
-					if (back_buf[py[p] + i][px[p] + 8] == 'I') {
-						nx = px[p] + 1;
-						ny = py[p];
-						flag = 1;
-					}
-					else if (back_buf[py[p] + i][px[p] + 8] == '0' + survive_p[k] && flag == 0) {
-						nx = px[p] + 1;
-						ny = py[p];
-						flag = 1;
-					}
-				}
-			}
-			for (int i = -5; i <= 5; i++) {
-				for (int k = 0; k < cnt; k++) {
-					if (back_buf[py[p] + i][px[p] - 8] == 'I') {
-						nx = px[p] - 1;
-						ny = py[p];
-						flag = 1;
-					}
-					else if (back_buf[py[p] + i][px[p] - 8] == '0' + survive_p[k] && flag == 0) {
-						nx = px[p] - 1;
-						ny = py[p];
-						flag = 1;
-					}
-				}
-			}
-		}
-		if (flag == 0) {//왼 or 오른쪽 9칸에 I 존재시 이동
-			for (int i = -5; i <= 5; i++) {
-				for (int k = 0; k < cnt; k++) {
-					if (back_buf[py[p] + i][px[p] + 9] == 'I') {
-						nx = px[p] + 1;
-						ny = py[p];
-						flag = 1;
-					}
-					else if (back_buf[py[p] + i][px[p] + 9] == '0' + survive_p[k] && flag == 0) {
-						nx = px[p] + 1;
-						ny = py[p];
-						flag = 1;
-					}
-				}
-			}
-			for (int i = -5; i <= 5; i++) {
-				for (int k = 0; k < cnt; k++) {
-					if (back_buf[py[p] + i][px[p] - 9] == 'I') {
-						nx = px[p] - 1;
-						ny = py[p];
-						flag = 1;
-					}
-					else if (back_buf[py[p] + i][px[p] - 9] == '0' + survive_p[k] && flag == 0) {
-						nx = px[p] - 1;
-						ny = py[p];
-						flag = 1;
-					}
-				}
-			}
-		}
-		if (flag == 0) {//왼 or 오른쪽 10칸에 I 존재시 이동
-			for (int i = -5; i <= 5; i++) {
-				for (int k = 0; k < cnt; k++) {
-					if (back_buf[py[p] + i][px[p] + 10] == 'I') {
-						nx = px[p] + 1;
-						ny = py[p];
-						flag = 1;
-					}
-					else if (back_buf[py[p] + i][px[p] + 10] == '0' + survive_p[k] && flag == 0) {
-						nx = px[p] + 1;
-						ny = py[p];
-						flag = 1;
-					}
-				}
-			}
-			for (int i = -5; i <= 5; i++) {
-				for (int k = 0; k < cnt; k++) {
-					if (back_buf[py[p] + i][px[p] - 10] == 'I') {
-						nx = px[p] - 1;
-						ny = py[p];
-						flag = 1;
-					}
-					else if (back_buf[py[p] + i][px[p] - 10] == '0' + survive_p[k] && flag == 0) {
-						nx = px[p] - 1;
-						ny = py[p];
-						flag = 1;
-					}
-				}
-			}
-		}
-		if (flag == 0) {//왼 or 오른쪽 11칸에 I 존재시 이동
-			for (int i = -5; i <= 5; i++) {
-				if (back_buf[py[p] + i][px[p] + 11] == 'I') {
-					nx = px[p] + 1;
-					ny = py[p];
-					flag = 1;
-				}
-			}
-			for (int i = -5; i <= 5; i++) {
-				if (back_buf[py[p] + i][px[p] - 11] == 'I') {
-					nx = px[p] - 1;
-					ny = py[p];
-					flag = 1;
-				}
-			}
-		}
-		if (flag == 0) {//왼 or 오른쪽 12칸에 I 존재시 이동
-			for (int i = -5; i <= 5; i++) {
-				if (back_buf[py[p] + i][px[p] + 12] == 'I') {
-					nx = px[p] + 1;
-					ny = py[p];
-					flag = 1;
-				}
-			}
-			for (int i = -5; i <= 5; i++) {
-				if (back_buf[py[p] + i][px[p] - 12] == 'I') {
-					nx = px[p] - 1;
-					ny = py[p];
-					flag = 1;
-				}
-			}
-		}
-		if (flag == 0) {//왼 or 오른쪽 13칸에 I 존재시 이동
-			for (int i = -5; i <= 5; i++) {
-				if (back_buf[py[p] + i][px[p] + 13] == 'I') {
-					nx = px[p] + 1;
-					ny = py[p];
-					flag = 1;
-				}
-			}
-			for (int i = -5; i <= 5; i++) {
-				if (back_buf[py[p] + i][px[p] - 13] == 'I') {
-					nx = px[p] - 1;
-					ny = py[p];
-					flag = 1;
-				}
-			}
-		}
-		if (flag == 0) {//왼 or 오른쪽 14칸에 I 존재시 이동
-			for (int i = -5; i <= 5; i++) {
-				if (back_buf[py[p] + i][px[p] + 14] == 'I') {
-					nx = px[p] + 1;
-					ny = py[p];
-					flag = 1;
-				}
-			}
-			for (int i = -5; i <= 5; i++) {
-				if (back_buf[py[p] + i][px[p] - 14] == 'I') {
-					nx = px[p] - 1;
-					ny = py[p];
-					flag = 1;
-				}
-			}
-		}
-		if (flag == 0) {//왼 or 오른쪽 15칸에 I 존재시 이동
-			for (int i = -5; i <= 5; i++) {
-				if (back_buf[py[p] + i][px[p] + 15] == 'I') {
-					nx = px[p] + 1;
-					ny = py[p];
-					flag = 1;
-				}
-			}
-			for (int i = -5; i <= 5; i++) {
-				if (back_buf[py[p] + i][px[p] - 15] == 'I') {
-					nx = px[p] - 1;
-					ny = py[p];
-					flag = 1;
-				}
-			}
-		}
-		if (flag == 0) {//왼 or 오른쪽 16칸에 I 존재시 이동
-			for (int i = -5; i <= 5; i++) {
-				if (back_buf[py[p] + i][px[p] + 16] == 'I') {
-					nx = px[p] + 1;
-					ny = py[p];
-					flag = 1;
-				}
-			}
-			for (int i = -5; i <= 5; i++) {
-				if (back_buf[py[p] + i][px[p] - 16] == 'I') {
-					nx = px[p] - 1;
-					ny = py[p];
-					flag = 1;
-				}
-			}
-		}
-		if (flag == 0) {//왼 or 오른쪽 17칸에 I 존재시 이동
-			for (int i = -5; i <= 5; i++) {
-				if (back_buf[py[p] + i][px[p] + 17] == 'I') {
-					nx = px[p] + 1;
-					ny = py[p];
-					flag = 1;
-				}
-			}
-			for (int i = -5; i <= 5; i++) {
-				if (back_buf[py[p] + i][px[p] - 17] == 'I') {
-					nx = px[p] - 1;
-					ny = py[p];
-					flag = 1;
-				}
-			}
-		}
-		if (flag == 0) {//왼 or 오른쪽 18칸에 I 존재시 이동
-			for (int i = -5; i <= 5; i++) {
-				if (back_buf[py[p] + i][px[p] + 18] == 'I') {
-					nx = px[p] + 1;
-					ny = py[p];
-					flag = 1;
-				}
-			}
-			for (int i = -5; i <= 5; i++) {
-				if (back_buf[py[p] + i][px[p] - 18] == 'I') {
-					nx = px[p] - 1;
-					ny = py[p];
-					flag = 1;
-				}
-			}
-		}
-		if (flag == 0) {//왼 or 오른쪽 19칸에 I 존재시 이동
-			for (int i = -5; i <= 5; i++) {
-				if (back_buf[py[p] + i][px[p] + 19] == 'I') {
-					nx = px[p] + 1;
-					ny = py[p];
-					flag = 1;
-				}
-			}
-			for (int i = -5; i <= 5; i++) {
-				if (back_buf[py[p] + i][px[p] - 19] == 'I') {
-					nx = px[p] - 1;
-					ny = py[p];
-					flag = 1;
-				}
-			}
-		}
-		if (flag == 0) {//왼 or 오른쪽 20칸에 I 존재시 이동
-			for (int i = -5; i <= 5; i++) {
-				if (back_buf[py[p] + i][px[p] + 20] == 'I') {
-					nx = px[p] + 1;
-					ny = py[p];
-					flag = 1;
-				}
-			}
-			for (int i = -5; i <= 5; i++) {
-				if (back_buf[py[p] + i][px[p] - 20] == 'I') {
-					nx = px[p] - 1;
-					ny = py[p];
-					flag = 1;
-				}
-			}
-		}
+
 		if(flag==0){
 			nx = px[p] + randint(-1, 1);
 			ny = py[p] + randint(-1, 1);
