@@ -9,21 +9,29 @@
 #define DIR_DOWN	3
 #define DIR_LEFT	1
 #define DIR_RIGHT	0
+int cnt = 0;
+int survive_p[PLAYER_MAX];
 
 void nightgame_init(void) {
 	map_init(8, 23);
 	int x, y;
 	for (int i = 0; i < n_player; i++) {
+		if (player[i].is_alive == true) {
+			survive_p[cnt] = i;
+			cnt++;
+		}
+	}
+	for (int i = 0; i < cnt; i++) {
 		// 같은 자리가 나오면 다시 생성
 		do {
 			y = randint(1, N_ROW - 2);
 			x = randint(1, N_COL - 2);
 		} while (!placable(x, y));
-		px[i] = x;
-		py[i] = y;
-		period[i] = randint(10, 30);
+		px[survive_p[i]] = x;
+		py[survive_p[i]] = y;
+		period[survive_p[i]] = randint(10, 30);
 
-		back_buf[py[i]][px[i]] = '0' + i;  // (0 .. n_player-1)
+		back_buf[py[survive_p[i]]][px[survive_p[i]]] = '0' + survive_p[i];  // (0 .. n_player-1)
 	}
 	int item_cnt = randint(1, 4);
 	ITEM night_item[ITEM_MAX];
@@ -591,9 +599,9 @@ void nightgame(void) {
 		}
 
 		// player 1 부터는 랜덤으로 움직임(8방향)
-		for (int i = 1; i < n_player; i++) {
-			if (tick % period[i] == 0) {
-				move_rand(i, -1);
+		for (int i = 0; i < cnt; i++) {
+			if (tick % period[survive_p[i]] == 0&&survive_p[i]!=0) {
+				move_rand(survive_p[i], -1);
 			}
 		}
 
