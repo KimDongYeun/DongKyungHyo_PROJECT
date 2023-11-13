@@ -21,7 +21,7 @@ void nightgame_init(void) {
 		} while (!placable(x, y));
 		px[i] = x;
 		py[i] = y;
-		period[i] = randint(100, 300);
+		period[i] = randint(10, 30);
 
 		back_buf[py[i]][px[i]] = '0' + i;  // (0 .. n_player-1)
 	}
@@ -81,15 +81,498 @@ void move_0_manual(key_t key) {
 void move_rand(int player, int dir) {
 	int p = player;  // 이름이 길어서...
 	int nx, ny;  // 움직여서 다음에 놓일 자리
-
+	int flag = 0;
+	int someone = 0;
 	// 움직일 공간이 없는 경우는 없다고 가정(무한 루프에 빠짐)	
 
-	do {
-		nx = px[p] + randint(-1, 1);
-		ny = py[p] + randint(-1, 1);
-	} while (!placable(nx, ny));
+	do { 
+		for (int j = -1; j <= 1; j += 2) { // 3X3에서 대각선에 I 있을 시 근처로 이동
+			for (int i = -1; i <= 1; i += 2) {
+				if (back_buf[py[p] + j][px[p] + i] == 'I') {
+					nx = px[p] + i;
+					ny = py[p];
+					flag = 1;
+					if (placable(nx, ny) == false) {
+						nx = px[p];
+						ny = py[p] + j;
+						flag = 1;
+					}
+				}
+			}
+		}
+		if (flag == 0) {
+			for (int i = -2; i <0; i++) { //5X5에서 1열에 1행2행에 I 존재시 이동
+				if (back_buf[py[p] + i][px[p] -2] == 'I') {
+					nx = px[p] - 1;
+					ny = py[p] - 1;
+					flag = 1;
+				}
+			}
+			if (back_buf[py[p]][px[p] - 2] == 'I') { //5X5에서 1열에 3행에 I 존재시 이동
+				nx = px[p] - 1;
+				ny = py[p];
+				flag = 1;
+			}
+			for (int i = 1; i <=2; i++) {
+				if (back_buf[py[p] + i][px[p] - 2] == 'I') { // 5X5에서 1열에 4행5행에 I 존재시 이동
+					nx = px[p] - 1;
+					ny = py[p] + 1;
+					flag = 1;
+				}
+			}
+			for (int i = -2; i < 0; i++) { //5X5에서 5열에 1행2행에 I 존재시 이동
+				if (back_buf[py[p] + i][px[p] + 2] == 'I') {
+					nx = px[p] + 1;
+					ny = py[p] - 1;
+					flag = 1;
+				}
+			}
+			if (back_buf[py[p]][px[p] + 2] == 'I') { //5X5에서 5열에 3행에 I 존재시 이동
+				nx = px[p] + 1;
+				ny = py[p];
+				flag = 1;
+			}
+			for (int i = 1; i <= 2; i++) {
+				if (back_buf[py[p] + i][px[p] + 2] == 'I') { //5X5에서 5열에 4행5행에 I 존재시 이동
+					nx = px[p] + 1;
+					ny = py[p] + 1;
+					flag = 1;
+				}
+			}
+			for (int i = -1; i <= 1; i++) { // 5X5에서 1행 2,3,4열에 I 존재시 이동
+				if (back_buf[py[p] - 2][px[p] + i] == 'I') {
+					nx = px[p];
+					ny = py[p] - 1;
+					flag = 1;
+				}
+			}
+			for (int i = -1; i <= 1; i++) { //5X5에서 5행 2,3,4열에 I 존재시 이동
+				if (back_buf[py[p] + 2][px[p] + i] == 'I') {
+					nx = px[p];
+					ny = py[p] + 1;
+					flag = 1;
+				}
+			}
+		}
+		if (flag == 0) {
+			for (int i = -3; i < 0; i++) { //7X7에서 1열에 1행2행3행에 I 존재시 이동
+				if (back_buf[py[p] + i][px[p] - 3] == 'I') {
+					nx = px[p] - 1;
+					ny = py[p] - 1;
+					flag = 1;
+				}
+			}
+			if (back_buf[py[p]][px[p] - 3] == 'I') { //7X7에서 1열에 4행에 I 존재시 이동
+				nx = px[p] - 1;
+				ny = py[p];
+				flag = 1;
+			}
+			for (int i = 1; i <= 3; i++) {
+				if (back_buf[py[p] + i][px[p] - 3] == 'I') { // 7X7에서 1열에 5행6행7행에 I 존재시 이동
+					nx = px[p] - 1;
+					ny = py[p] + 1;
+					flag = 1;
+				}
+			}
+			for (int i = -3; i < 0; i++) { //7X7에서 7열에 1행2행3행에 I 존재시 이동
+				if (back_buf[py[p] + i][px[p] + 3] == 'I') {
+					nx = px[p] + 1;
+					ny = py[p] - 1;
+					flag = 1;
+				}
+			}
+			if (back_buf[py[p]][px[p] + 3] == 'I') { //7X7에서 7열에 4행에 I 존재시 이동
+				nx = px[p] + 1;
+				ny = py[p];
+				flag = 1;
+			}
+			for (int i = 1; i <= 3; i++) {
+				if (back_buf[py[p] + i][px[p] + 3] == 'I') { //7X7에서 7열에 5행6행7행에 I 존재시 이동
+					nx = px[p] + 1;
+					ny = py[p] + 1;
+					flag = 1;
+				}
+			}
+			for (int i = -2; i <= 2; i++) { // 7X7에서 1행 2,3,4,5,6열에 I 존재시 이동
+				if (back_buf[py[p] - 3][px[p] + i] == 'I') {
+					nx = px[p];
+					ny = py[p] - 1;
+					flag = 1;
+				}
+			}
+			for (int i = -2; i <= 2; i++) { //7X7에서 5행 2,3,4,5,6열에 I 존재시 이동
+				if (back_buf[py[p] + 3][px[p] + i] == 'I') {
+					nx = px[p];
+					ny = py[p] + 1;
+					flag = 1;
+				}
+			}
+		}
+		if (flag == 0) {
+			for (int i = -4; i < 0; i++) { //9X9에서 1열에 1행2행3행4행에 I 존재시 이동
+				if (back_buf[py[p] + i][px[p] - 4] == 'I') {
+					nx = px[p] - 1;
+					ny = py[p] - 1;
+					flag = 1;
+				}
+			}
+			if (back_buf[py[p]][px[p] - 4] == 'I') { //9X9에서 1열에 5행에 I 존재시 이동
+				nx = px[p] - 1;
+				ny = py[p];
+				flag = 1;
+			}
+			for (int i = 1; i <= 4; i++) {
+				if (back_buf[py[p] + i][px[p] - 4] == 'I') { // 9X9에서 1열에 6행7행8행9행에 I 존재시 이동
+					nx = px[p] - 1;
+					ny = py[p] + 1;
+					flag = 1;
+				}
+			}
+			for (int i = -4; i < 0; i++) { //9X9에서 9열에 1행2행3행4행에 I 존재시 이동
+				if (back_buf[py[p] + i][px[p] + 4] == 'I') {
+					nx = px[p] + 1;
+					ny = py[p] - 1;
+					flag = 1;
+				}
+			}
+			if (back_buf[py[p]][px[p] + 4] == 'I') { //9X9에서 9열에 5행에 I 존재시 이동
+				nx = px[p] + 1;
+				ny = py[p];
+				flag = 1;
+			}
+			for (int i = 1; i <= 4; i++) {
+				if (back_buf[py[p] + i][px[p] + 4] == 'I') { //9X9에서 9열에 6행7행8행9행에 I 존재시 이동
+					nx = px[p] + 1;
+					ny = py[p] + 1;
+					flag = 1;
+				}
+			}
+			for (int i = -3; i <= 3; i++) { // 9X9에서 1행 2,3,4,5,6,7,8열에 I 존재시 이동
+				if (back_buf[py[p] - 4][px[p] + i] == 'I') {
+					nx = px[p];
+					ny = py[p] - 1;
+					flag = 1;
+				}
+			}
+			for (int i = -3; i <= 3; i++) { //9X9에서 9행 2,3,4,5,6,7,8열에 I 존재시 이동
+				if (back_buf[py[p] + 4][px[p] + i] == 'I') {
+					nx = px[p];
+					ny = py[p] + 1;
+					flag = 1;
+				}
+			}
+		}
+		if (flag == 0) {
+			for (int i = -5; i < 0; i++) { //11X11에서 1열에 1행2행3행4행5행에 I 존재시 이동
+				if (back_buf[py[p] + i][px[p] - 5] == 'I') {
+					nx = px[p] - 1;
+					ny = py[p] - 1;
+					flag = 1;
+				}
+			}
+			if (back_buf[py[p]][px[p] - 5] == 'I') { //11X11에서 1열에 6행에 I 존재시 이동
+				nx = px[p] - 1;
+				ny = py[p];
+				flag = 1;
+			}
+			for (int i = 1; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] - 5] == 'I') { // 11X11에서 1열에 7행8행9행10행11행에 I 존재시 이동
+					nx = px[p] - 1;
+					ny = py[p] + 1;
+					flag = 1;
+				}
+			}
+			for (int i = -5; i < 0; i++) { //11X11에서 11열에 1행2행3행4행5행에 I 존재시 이동
+				if (back_buf[py[p] + i][px[p] + 5] == 'I') {
+					nx = px[p] + 1;
+					ny = py[p] - 1;
+					flag = 1;
+				}
+			}
+			if (back_buf[py[p]][px[p] + 5] == 'I') { //11X11에서 11열에 6행에 I 존재시 이동
+				nx = px[p] + 1;
+				ny = py[p];
+				flag = 1;
+			}
+			for (int i = 1; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] + 5] == 'I') { //11X11에서 11열에 7행8행9행10행11행에 I 존재시 이동
+					nx = px[p] + 1;
+					ny = py[p] + 1;
+					flag = 1;
+				}
+			}
+			for (int i = -4; i <= 4; i++) { // 11X11에서 1행 2,3,4,5,6,7,8,9,10열에 I 존재시 이동
+				if (back_buf[py[p] - 5][px[p] + i] == 'I') {
+					nx = px[p];
+					ny = py[p] - 1;
+					flag = 1;
+				}
+			}
+			for (int i = -4; i <= 4; i++) { //11X11에서 11행 2,3,4,5,6,7,8,9,10열에 I 존재시 이동
+				if (back_buf[py[p] + 5][px[p] + i] == 'I') {
+					nx = px[p];
+					ny = py[p] + 1;
+					flag = 1;
+				}
+			}
+		}
+		if (flag == 0) {//왼 or 오른쪽 6칸에 I 존재시 이동
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] + 6] == 'I') {
+					nx = px[p] + 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] - 6] == 'I') {
+					nx = px[p] -1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+		}
+		if (flag == 0) {//왼 or 오른쪽 7칸에 I 존재시 이동
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] + 7] == 'I') {
+					nx = px[p] + 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] - 7] == 'I') {
+					nx = px[p] - 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+		}
+		if (flag == 0) {//왼 or 오른쪽 8칸에 I 존재시 이동
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] + 8] == 'I') {
+					nx = px[p] + 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] - 8] == 'I') {
+					nx = px[p] - 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+		}
+		if (flag == 0) {//왼 or 오른쪽 9칸에 I 존재시 이동
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] + 9] == 'I') {
+					nx = px[p] + 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] - 9] == 'I') {
+					nx = px[p] - 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+		}
+		if (flag == 0) {//왼 or 오른쪽 10칸에 I 존재시 이동
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] + 10] == 'I') {
+					nx = px[p] + 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] - 10] == 'I') {
+					nx = px[p] - 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+		}
+		if (flag == 0) {//왼 or 오른쪽 11칸에 I 존재시 이동
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] + 11] == 'I') {
+					nx = px[p] + 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] - 11] == 'I') {
+					nx = px[p] - 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+		}
+		if (flag == 0) {//왼 or 오른쪽 12칸에 I 존재시 이동
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] + 12] == 'I') {
+					nx = px[p] + 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] - 12] == 'I') {
+					nx = px[p] - 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+		}
+		if (flag == 0) {//왼 or 오른쪽 13칸에 I 존재시 이동
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] + 13] == 'I') {
+					nx = px[p] + 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] - 13] == 'I') {
+					nx = px[p] - 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+		}
+		if (flag == 0) {//왼 or 오른쪽 14칸에 I 존재시 이동
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] + 14] == 'I') {
+					nx = px[p] + 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] - 14] == 'I') {
+					nx = px[p] - 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+		}
+		if (flag == 0) {//왼 or 오른쪽 15칸에 I 존재시 이동
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] + 15] == 'I') {
+					nx = px[p] + 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] - 15] == 'I') {
+					nx = px[p] - 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+		}
+		if (flag == 0) {//왼 or 오른쪽 16칸에 I 존재시 이동
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] + 16] == 'I') {
+					nx = px[p] + 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] - 16] == 'I') {
+					nx = px[p] - 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+		}
+		if (flag == 0) {//왼 or 오른쪽 17칸에 I 존재시 이동
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] + 17] == 'I') {
+					nx = px[p] + 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] - 17] == 'I') {
+					nx = px[p] - 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+		}
+		if (flag == 0) {//왼 or 오른쪽 18칸에 I 존재시 이동
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] + 18] == 'I') {
+					nx = px[p] + 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] - 18] == 'I') {
+					nx = px[p] - 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+		}
+		if (flag == 0) {//왼 or 오른쪽 19칸에 I 존재시 이동
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] + 19] == 'I') {
+					nx = px[p] + 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] - 19] == 'I') {
+					nx = px[p] - 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+		}
+		if (flag == 0) {//왼 or 오른쪽 20칸에 I 존재시 이동
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] + 20] == 'I') {
+					nx = px[p] + 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+			for (int i = -5; i <= 5; i++) {
+				if (back_buf[py[p] + i][px[p] - 20] == 'I') {
+					nx = px[p] - 1;
+					ny = py[p];
+					flag = 1;
+				}
+			}
+		}
+		if(flag==0){
+			nx = px[p] + randint(-1, 1);
+			ny = py[p] + randint(-1, 1);
+		}
 
-	move_record(p, nx, ny);
+		for (int i = 0; i < n_player; i++) { // 가장 가까운 경로에 사람 있으면 멈춤
+			if (back_buf[ny][nx] == '0' + i|| back_buf[ny][nx] == 'I') {
+				someone = 1;
+				break;
+			}
+		}
+		if (someone == 1) { break; }
+
+	} while (!placable(nx, ny));
+	if (someone == 0) {
+		move_record(p, nx, ny);
+	}
 }
 
 void nightgame(void) {
