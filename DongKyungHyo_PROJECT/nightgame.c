@@ -12,6 +12,9 @@
 #define DIR_RIGHT	0
 #define CHA		1
 #define IGN		2
+#define STR		1
+#define INT		2
+#define BYE		3
 int cnt = 0;
 int survive_p[PLAYER_MAX];
 int item_cnt;
@@ -693,13 +696,13 @@ void change_item_0(void) {
 	int change_flag = 0;
 	for (int i = -1; i <= 1; i += 2) { // 위 아래
 		if (back_buf[py[0] + i][px[0]] == 'I' && player[0].hasitem == true) {
-			int ans;
+			int choose;
 			gotoxy(25, 4);
 			printf("아이템을 발견했습니다.");
 			gotoxy(25, 5);
 			printf("아이템을 바꾸시려면 1, 무시하려면 2를 눌러주세요 (1/2) :");
-			scanf_s("%d", &ans);
-			if (ans == 1) {
+			scanf_s("%d", &choose);
+			if (choose == 1) {
 				for (int j = 0; j < item_cnt; j++) {
 					if (py[0] + i == iy[j] && px[0] == ix[j]) {
 						temp[0] = player[0].item;
@@ -717,13 +720,13 @@ void change_item_0(void) {
 	}
 	for (int i = -1; i <= 1; i += 2) { // 좌 우
 		if (back_buf[py[0]][px[0]+i] == 'I' && player[0].hasitem == true) {
-			int ans;
+			int choose;
 			gotoxy(25, 4);
 			printf("아이템을 발견했습니다.");
 			gotoxy(25, 5);
 			printf("아이템을 바꾸시려면 1, 무시하려면 2를 눌러주세요 (1/2) :");
-			scanf_s("%d", &ans);
-			if (ans == 1) {
+			scanf_s("%d", &choose);
+			if (choose == 1) {
 				for (int j = 0; j < item_cnt; j++) {
 					if (py[0] == iy[j] && px[0] + i == ix[j]) {
 						temp[0] = player[0].item;
@@ -781,7 +784,30 @@ void change_item(int p) {
 	}
 }
 
+void pto0(void) {
+	display();
+	int choose;
+	for (int i = 0; i < cnt; i++) {
+		if (back_buf[py[0] + 1][px[0]] == '0' + survive_p[i] || back_buf[py[0] - 1][px[0]] == '0' + survive_p[i] || back_buf[py[0]][px[0] + 1] == '0' + survive_p[i] || back_buf[py[0]][px[0] - 1] == '0' + survive_p[i]) {
+			gotoxy(25, 4);
+			printf("다른 플레이어와 만났습니다!");
+			gotoxy(25, 5);
+			printf("원하는 선택지를 고르세요.");
+			gotoxy(25, 6);
+			printf("1)강탈시도   2)회유시도   3)무시 (1/2/3) :");
+			scanf_s("%d", &choose);
+			if (choose == STR) {
 
+			}
+			else if (choose == INT) {
+
+			}
+			else {
+
+			}
+		}
+	}
+}
 
 void nightgame(void) {
 	nightgame_init();
