@@ -134,6 +134,7 @@
     <ClCompile Include="sample.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="tug-of-war.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="canvas.h" />

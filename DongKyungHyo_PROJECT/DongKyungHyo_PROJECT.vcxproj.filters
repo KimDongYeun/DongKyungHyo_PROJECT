@@ -30,6 +30,9 @@
     <ClCompile Include="mugunghwa.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="tug-of-war.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="canvas.h">
