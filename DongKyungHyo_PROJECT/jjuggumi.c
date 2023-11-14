@@ -69,6 +69,7 @@ int jjuggumi_init(void) {
 	}
 
 	fclose(fp);
+	n_alive = n_player;
 	return 0;
 }
 

@@ -10,10 +10,13 @@
 #define DIR_DOWN	3
 #define DIR_LEFT	1
 #define DIR_RIGHT	0
+#define CHA		1
+#define IGN		2
 int cnt = 0;
 int survive_p[PLAYER_MAX];
 int item_cnt;
 ITEM night_item[ITEM_MAX];
+int item_num[4];
 
 
 void nightgame_init(void) {
@@ -38,14 +41,19 @@ void nightgame_init(void) {
 		back_buf[py[survive_p[i]]][px[survive_p[i]]] = '0' + survive_p[i];  // (0 .. n_player-1)
 	}
 	item_cnt = randint(1, 4);
+	for (int i = 0; i < item_cnt; i++) {
+		item_num[i] = randint(0, ITEM_MAX-1);
+		for (int j = 0; j < i; j++) {
+			if (item_num[i] == item_num[j]) { i--; break; }
+		}
+	}
 	
 	for (int i = 0; i < item_cnt; i++) {
 		do {
 			y = randint(1, N_ROW - 2);
 			x = randint(1, N_COL - 2);
 		} while (!placable(x, y));
-		int item_num = randint(0, ITEM_MAX);
-		night_item[i] = item[item_num];
+		night_item[i] = item[item_num[i]]; //
 		ix[i] = x;
 		iy[i] = y;
 
@@ -624,14 +632,31 @@ void move_rand(int playerr, int dir) {
 	}
 }
 
+void get_message(int p) {
+	display();
+	gotoxy(0, N_ROW + 1);
+	printf("%d 플레이어가 '%s'를 획득했습니다.", p, player[p].item.name);
+	Sleep(1000);
+	gotoxy(0, N_ROW + 1);
+	printf("                                            ");
+}
+
+void change_message(int p) {
+	display();
+	gotoxy(0, N_ROW + 1);
+	printf("%d 플레이어가 '%s'로 아이템을 교환했습니다.");
+}
+
 void get_item(int p) {
+	int get_flag = 0;
 	for (int i = -1; i <= 1; i += 2) { // 위 아래
 		if (back_buf[py[p] + i][px[p]] == 'I'&& player[p].hasitem==false) {
 			back_buf[py[p] + i][px[p]] = ' ';
 			player[p].hasitem = true;
 			for (int j = 0; j < item_cnt;j++) {
-				if (back_buf[py[p] + i][px[p]] == back_buf[iy[j]][ix[j]]) {
+				if (py[p]+i==iy[j]&&px[p]==ix[j]) {
 					player[p].item = night_item[j];
+					get_flag = 1;
 				}
 			}
 		}
@@ -641,13 +666,16 @@ void get_item(int p) {
 			back_buf[py[p]][px[p]+i] = ' ';
 			player[p].hasitem = true;
 			for (int j = 0; j < item_cnt; j++) {
-				if (back_buf[py[p]][px[p]+i] == back_buf[iy[j]][ix[j]]) {
+				if (py[p] == iy[j] && px[p] + i == ix[j]) {
 					player[p].item = night_item[j];
+					get_flag = 1;
 				}
 			}
 		}
 	}
-	
+	if (get_flag == 1) {
+		get_message(p);
+	}
 }
 
 void first_lucky(void) {
@@ -657,13 +685,82 @@ void first_lucky(void) {
 }
 
 void change_item_0(void) {
+	display();
 	for (int i = -1; i <= 1; i += 2) { // 위 아래
 		if (back_buf[py[0] + i][px[0]] == 'I' && player[0].hasitem == true) {
+			int ans;
 			gotoxy(25, 4);
 			printf("아이템을 발견했습니다.");
+			gotoxy(25, 5);
+			printf("아이템을 바꾸시려면 1, 무시하려면 2를 눌러주세요 (1/2) :");
+			scanf_s("%d", &ans);
+			if (ans == 1) {
+				back_buf[py[0] + i][px[0]] = ' ';
+				for (int j = 0; j < item_cnt; j++) {
+					if (py[0] + i == iy[j] && px[0] == ix[j]) {
+						player[0].item = night_item[j];
+					}
+				}
+			}
+			gotoxy(25, 4);
+			printf("                        ");
+			gotoxy(25, 5);
+			printf("                                                              ");
+		}
+	}
+	for (int i = -1; i <= 1; i += 2) { // 좌 우
+		if (back_buf[py[0]][px[0]+i] == 'I' && player[0].hasitem == true) {
+			int ans;
+			gotoxy(25, 4);
+			printf("아이템을 발견했습니다.");
+			gotoxy(25, 5);
+			printf("아이템을 바꾸시려면 1, 무시하려면 2를 눌러주세요 (1/2) :");
+			scanf_s("%d", &ans);
+			if (ans == 1) {
+				back_buf[py[0] + i][px[0]] = ' ';
+				for (int j = 0; j < item_cnt; j++) {
+					if (py[0] == iy[j] && px[0] + i == ix[j]) {
+						player[0].item = night_item[j];
+					}
+				}
+			}
+			gotoxy(25, 4);
+			printf("                        ");
+			gotoxy(25, 5);
+			printf("                                                              ");
 		}
 	}
 }
+void change_item(int p) {
+	for (int i = -1; i <= 1; i += 2) { // 위 아래
+		if (back_buf[py[p] + i][px[p]] == 'I' && player[0].hasitem == true) {
+			int g_or_not = randint(CHA,IGN);
+			if (g_or_not == CHA) {
+				back_buf[py[p] + i][px[p]] = ' ';
+				for (int j = 0; j < item_cnt; j++) {
+					if (py[p] + i== iy[j] && px[p] == ix[j]) {
+						player[p].item = night_item[j];
+					}
+				}
+			}
+		}
+	}
+	for (int i = -1; i <= 1; i += 2) { // 좌 우
+		if (back_buf[py[p]][px[p] + i] == 'I' && player[0].hasitem == true) {
+			int g_or_not = randint(CHA, IGN);
+			if (g_or_not == CHA) {
+				back_buf[py[p]][px[p]+i] = ' ';
+				for (int j = 0; j < item_cnt; j++) {
+					if (py[p] == iy[j] && px[p] + i == ix[j]) {
+						player[p].item = night_item[j];
+					}
+				}
+			}
+		}
+	}
+}
+
+
 
 void nightgame(void) {
 	nightgame_init();
@@ -689,9 +786,9 @@ void nightgame(void) {
 			if (tick % period[survive_p[i]] == 0&&survive_p[i]!=0) {
 				move_rand(survive_p[i], -1);
 				get_item(survive_p[i]);
+				change_item(survive_p[i]);
 			}
 		}
-
 		display();
 		Sleep(10);
 		tick += 10;
