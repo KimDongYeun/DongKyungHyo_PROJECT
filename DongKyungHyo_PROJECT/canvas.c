@@ -87,10 +87,10 @@ void print_status(void) {
 	printf("                     intl      str      stm\n");
 	for (int p = 0; p < n_player; p++) {
 		if (player[p].intel >= 10) { // ÁÂ¿ìÁ¤·Ä
-			printf("player %2d: %5s     %d(%s%d)    %d(%s%d)     %d%%\n", p, player[p].is_alive ? "alive" : "DEAD", player[p].intel, player[p].item.intel_buf >=0 ? "+" : "-", player[p].item.intel_buf, player[p].str, player[p].item.str_buf >= 0 ? "+" : "-", player[p].item.str_buf, player[p].stamina);
+			printf("player %2d: %5s     %d(%s%d)    %d(%s%d)     %d%%\n", p, player[p].is_alive ? "alive" : "DEAD", player[p].intel, player[p].item.intel_buf >=0 ? "+" : "", player[p].item.intel_buf, player[p].str, player[p].item.str_buf >= 0 ? "+" : "", player[p].item.str_buf, player[p].stamina);
 		}
 		else {
-			printf("player %2d: %5s      %d(%s%d)    %d(%s%d)     %d%%\n", p, player[p].is_alive ? "alive" : "DEAD", player[p].intel, player[p].item.intel_buf >= 0 ? "+" : "-", player[p].item.intel_buf, player[p].str, player[p].item.str_buf >= 0 ? "+" : "-", player[p].item.str_buf, player[p].stamina);
+			printf("player %2d: %5s      %d(%s%d)    %d(%s%d)     %d%%\n", p, player[p].is_alive ? "alive" : "DEAD", player[p].intel, player[p].item.intel_buf >= 0 ? "+" : "", player[p].item.intel_buf, player[p].str, player[p].item.str_buf >= 0 ? "+" : "", player[p].item.str_buf, player[p].stamina);
 		}
 	}
 }

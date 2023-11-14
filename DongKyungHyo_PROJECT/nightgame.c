@@ -2,6 +2,7 @@
 #include "canvas.h"
 #include "keyin.h"
 #include <stdio.h>
+#include <stdbool.h>
 #include <time.h>
 
 
@@ -11,6 +12,9 @@
 #define DIR_RIGHT	0
 int cnt = 0;
 int survive_p[PLAYER_MAX];
+int item_cnt;
+ITEM night_item[ITEM_MAX];
+
 
 void nightgame_init(void) {
 	map_init(8, 23);
@@ -29,18 +33,18 @@ void nightgame_init(void) {
 		} while (!placable(x, y));
 		px[survive_p[i]] = x;
 		py[survive_p[i]] = y;
-		period[survive_p[i]] = randint(100, 200);
+		period[survive_p[i]] = randint(300, 500);
 
 		back_buf[py[survive_p[i]]][px[survive_p[i]]] = '0' + survive_p[i];  // (0 .. n_player-1)
 	}
-	int item_cnt = randint(1, 4);
-	ITEM night_item[ITEM_MAX];
+	item_cnt = randint(1, 4);
+	
 	for (int i = 0; i < item_cnt; i++) {
 		do {
 			y = randint(1, N_ROW - 2);
 			x = randint(1, N_COL - 2);
 		} while (!placable(x, y));
-		int item_num = randint(0, ITEM_MAX-1);
+		int item_num = randint(0, ITEM_MAX);
 		night_item[i] = item[item_num];
 		ix[i] = x;
 		iy[i] = y;
@@ -620,11 +624,53 @@ void move_rand(int playerr, int dir) {
 	}
 }
 
+void get_item(int p) {
+	for (int i = -1; i <= 1; i += 2) { // 위 아래
+		if (back_buf[py[p] + i][px[p]] == 'I'&& player[p].hasitem==false) {
+			back_buf[py[p] + i][px[p]] = ' ';
+			player[p].hasitem = true;
+			for (int j = 0; j < item_cnt;j++) {
+				if (back_buf[py[p] + i][px[p]] == back_buf[iy[j]][ix[j]]) {
+					player[p].item = night_item[j];
+				}
+			}
+		}
+	}
+	for (int i = -1; i <= 1; i += 2) { // 좌 우
+		if (back_buf[py[p]][px[p]+i] == 'I' && player[p].hasitem == false) {
+			back_buf[py[p]][px[p]+i] = ' ';
+			player[p].hasitem = true;
+			for (int j = 0; j < item_cnt; j++) {
+				if (back_buf[py[p]][px[p]+i] == back_buf[iy[j]][ix[j]]) {
+					player[p].item = night_item[j];
+				}
+			}
+		}
+	}
+	
+}
+
+void first_lucky(void) {
+	for (int i = 0; i < cnt; i++) {
+		get_item(survive_p[i]);
+	}
+}
+
+void change_item_0(void) {
+	for (int i = -1; i <= 1; i += 2) { // 위 아래
+		if (back_buf[py[0] + i][px[0]] == 'I' && player[0].hasitem == true) {
+			gotoxy(25, 4);
+			printf("아이템을 발견했습니다.");
+		}
+	}
+}
+
 void nightgame(void) {
 	nightgame_init();
 	left_player();
 	system("cls");
 	display();
+	first_lucky(); //처음 랜덤 배정에서 아이템이 바로 옆에 있으면 get
 	while (1) {
 		// player 0만 손으로 움직임(4방향)
 		key_t key = get_key();
@@ -633,12 +679,16 @@ void nightgame(void) {
 		}
 		else if (key != K_UNDEFINED) {
 			move_0_manual(key);
+			if (survive_p[0] == 0) { // 무궁화에서 0이 죽었을 때 생각해서 살았을 때만 
+				get_item(survive_p[0]);
+				change_item_0();
+			}
 		}
-
 		// player 1 부터는 랜덤으로 움직임(8방향)
 		for (int i = 0; i < cnt; i++) {
 			if (tick % period[survive_p[i]] == 0&&survive_p[i]!=0) {
 				move_rand(survive_p[i], -1);
+				get_item(survive_p[i]);
 			}
 		}
 
