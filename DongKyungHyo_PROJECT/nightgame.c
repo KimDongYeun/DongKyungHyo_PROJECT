@@ -638,13 +638,16 @@ void get_message(int p) {
 	printf("%d 플레이어가 '%s'(을)를 획득했습니다.", p, player[p].item.name);
 	Sleep(1000);
 	gotoxy(0, N_ROW + 1);
-	printf("                                            ");
+	printf("                                                         ");
 }
 
 void change_message(int p) {
 	display();
 	gotoxy(0, N_ROW + 1);
 	printf("%d 플레이어가 '%s'(으)로 아이템을 교환했습니다.",p,player[p].item.name);
+	Sleep(1000);
+	gotoxy(0, N_ROW + 1);
+	printf("                                                             ");
 }
 
 void get_item(int p) {
@@ -687,6 +690,7 @@ void first_lucky(void) {
 void change_item_0(void) {
 	display();
 	ITEM temp[10];
+	int change_flag = 0;
 	for (int i = -1; i <= 1; i += 2) { // 위 아래
 		if (back_buf[py[0] + i][px[0]] == 'I' && player[0].hasitem == true) {
 			int ans;
@@ -696,12 +700,12 @@ void change_item_0(void) {
 			printf("아이템을 바꾸시려면 1, 무시하려면 2를 눌러주세요 (1/2) :");
 			scanf_s("%d", &ans);
 			if (ans == 1) {
-				back_buf[py[0] + i][px[0]] = ' ';
 				for (int j = 0; j < item_cnt; j++) {
 					if (py[0] + i == iy[j] && px[0] == ix[j]) {
 						temp[0] = player[0].item;
 						player[0].item = night_item[j];
 						night_item[j] = temp[0];
+						change_flag = 1;
 					}
 				}
 			}
@@ -720,12 +724,12 @@ void change_item_0(void) {
 			printf("아이템을 바꾸시려면 1, 무시하려면 2를 눌러주세요 (1/2) :");
 			scanf_s("%d", &ans);
 			if (ans == 1) {
-				back_buf[py[0] + i][px[0]] = ' ';
 				for (int j = 0; j < item_cnt; j++) {
 					if (py[0] == iy[j] && px[0] + i == ix[j]) {
 						temp[0] = player[0].item;
 						player[0].item = night_item[j];
 						night_item[j] = temp[0];
+						change_flag = 1;
 					}
 				}
 			}
@@ -735,19 +739,23 @@ void change_item_0(void) {
 			printf("                                                              ");
 		}
 	}
+	if (change_flag == 1) {
+		change_message(0);
+	}
 }
 void change_item(int p) {
 	ITEM temp[10];
+	int change_flag = 0;
 	for (int i = -1; i <= 1; i += 2) { // 위 아래
 		if (back_buf[py[p] + i][px[p]] == 'I' && player[0].hasitem == true) {
 			int g_or_not = randint(CHA,IGN);
 			if (g_or_not == CHA) {
-				back_buf[py[p] + i][px[p]] = ' ';
 				for (int j = 0; j < item_cnt; j++) {
 					if (py[p] + i== iy[j] && px[p] == ix[j]) {
 						temp[p] = player[p].item;
 						player[p].item = night_item[j];
 						night_item[j] = temp[p];
+						change_flag = 1;
 					}
 				}
 			}
@@ -757,16 +765,19 @@ void change_item(int p) {
 		if (back_buf[py[p]][px[p] + i] == 'I' && player[0].hasitem == true) {
 			int g_or_not = randint(CHA, IGN);
 			if (g_or_not == CHA) {
-				back_buf[py[p]][px[p]+i] = ' ';
 				for (int j = 0; j < item_cnt; j++) {
 					if (py[p] == iy[j] && px[p] + i == ix[j]) {
 						temp[p] = player[p].item;
 						player[p].item = night_item[j];
 						night_item[j] = temp[p];
+						change_flag = 1;
 					}
 				}
 			}
 		}
+	}
+	if (change_flag == 1) {
+		change_message(0);
 	}
 }
 
