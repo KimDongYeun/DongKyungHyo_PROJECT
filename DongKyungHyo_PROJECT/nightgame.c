@@ -795,7 +795,7 @@ void pto0(void) {
 	display();
 	if (player[0].stamina == 0) { return; } //스태미나 0이면 상호작용 불가
 	int choose;
-	ITEM temp[ITEM_MAX];
+	ITEM temp[1];
 	ITEM nothing[1] = { 0 }; //강탈 시 0으로 덮어줄 변수
 	for (int i = 0; i < cnt; i++) {
 		if (back_buf[py[0] + 1][px[0]] == '0' + survive_p[i] || back_buf[py[0] - 1][px[0]] == '0' + survive_p[i] || back_buf[py[0]][px[0] + 1] == '0' + survive_p[i] || back_buf[py[0]][px[0] - 1] == '0' + survive_p[i]) {
@@ -817,13 +817,13 @@ void pto0(void) {
 				double real_str_p = (player[survive_p[i]].str + player[survive_p[i]].item.str_buf) * (player[survive_p[i]].stamina / 100.0);
 				gotoxy(0, N_ROW + 1);
 				printf("강탈을 시도합니다...");
-				Sleep(700);
+				Sleep(1000);
 				gotoxy(0, N_ROW + 1);
 				printf("                            ");
 				if (real_str_0 > real_str_p) { //성공
 					gotoxy(0, N_ROW + 1);
 					printf("강탈 성공!");
-					Sleep(700);
+					Sleep(1000);
 					gotoxy(0, N_ROW + 1);
 					printf("                 ");
 					if (player[survive_p[i]].hasitem == false) { //상대방이 아이템이 없으면
@@ -836,14 +836,14 @@ void pto0(void) {
 					else {
 						if (player[0].hasitem == true) { // 0이 아이템이 있으면
 							temp[0] = player[0].item;
-							player[0].item = player[i].item;
-							player[i].item = temp[0];
+							player[0].item = player[survive_p[i]].item;
+							player[survive_p[i]].item = temp[0];
 							gotoxy(0, N_ROW + 1);
 							change_message(0);
 						}
 						else { // 0이 아이템이 없으면
-							player[0].item = player[i].item;
-							player[i].item = nothing[0];
+							player[0].item = player[survive_p[i]].item;
+							player[survive_p[i]].item = nothing[0];
 							get_message(0);
 						}
 					}
@@ -854,7 +854,7 @@ void pto0(void) {
 				else { //실패
 					gotoxy(0, N_ROW + 1);
 					printf("강탈 실패!");
-					Sleep(700);
+					Sleep(1000);
 					gotoxy(0, N_ROW + 1);
 					printf("                 ");
 					player[0].stamina -= 60;
@@ -867,13 +867,13 @@ void pto0(void) {
 				double real_int_p = (player[survive_p[i]].intel + player[survive_p[i]].item.intel_buf) * (player[survive_p[i]].stamina / 100.0);
 				gotoxy(0, N_ROW + 1);
 				printf("회유를 시도합니다...");
-				Sleep(700);
+				Sleep(1000);
 				gotoxy(0, N_ROW + 1);
 				printf("                            ");
 				if (real_int_0 > real_int_p) { //성공
 					gotoxy(0, N_ROW + 1);
 					printf("회유 성공!");
-					Sleep(700);
+					Sleep(1000);
 					gotoxy(0, N_ROW + 1);
 					printf("                 ");
 					if (player[survive_p[i]].hasitem == false) { //상대방이 아이템이 없으면
@@ -886,13 +886,13 @@ void pto0(void) {
 					else {
 						if (player[0].hasitem == true) { // 0이 아이템이 있으면
 							temp[0] = player[0].item;
-							player[0].item = player[i].item;
-							player[i].item = temp[0];
+							player[0].item = player[survive_p[i]].item;
+							player[survive_p[i]].item = temp[0];
 							change_message(0);
 						}
 						else { // 0이 아이템이 없으면
-							player[0].item = player[i].item;
-							player[i].item = nothing[0];
+							player[0].item = player[survive_p[i]].item;
+							player[survive_p[i]].item = nothing[0];
 							get_message(0);
 						}
 					}
@@ -903,7 +903,7 @@ void pto0(void) {
 				else { //실패
 					gotoxy(0, N_ROW + 1);
 					printf("회유 실패!");
-					Sleep(700);
+					Sleep(1000);
 					gotoxy(0, N_ROW + 1);
 					printf("                 ");
 					player[0].stamina -= 40;
@@ -913,8 +913,8 @@ void pto0(void) {
 			}
 			else {
 				gotoxy(0, N_ROW + 1);
-				printf("무시하고 지나갑니다.");
-				Sleep(700);
+				printf("무시하고 지나갑니다...");
+				Sleep(1000);
 				gotoxy(0, N_ROW + 1);
 				printf("                         ");
 			}
@@ -924,9 +924,139 @@ void pto0(void) {
 
 void ptop(int p) {
 	display();
+	ITEM temp[1];
+	ITEM nothing[1] = { 0 }; //강탈 시 0으로 덮어줄 변수
+	int a = 0, b = 0;
+	int p_or_i = 0;
 	for (int i = 0; i < cnt; i++) {
 		if (back_buf[py[p] + 1][px[p]] == '0' + survive_p[i] || back_buf[py[p] - 1][px[p]] == '0' + survive_p[i] || back_buf[py[p]][px[p] + 1] == '0' + survive_p[i] || back_buf[py[p]][px[p] - 1] == '0' + survive_p[i]) {
-
+			if (player[p].hasitem == false && player[i].hasitem == true) { //아이템이 p가 없고 상대방이 있는 경우
+				a = p;
+				b = survive_p[i];
+			}
+			else if (player[p].hasitem == true && player[i].hasitem == false) { //아이템이 p가 있고 상대방이 없는 경우
+				a = survive_p[i];
+				b = p;
+			}
+			else { //아이템이 둘다 있거나 없는 경우
+				int p_or_i = randint(1, 2);
+				if (p_or_i == 1) {
+					a = p;
+					b = survive_p[i];
+				}
+				else {
+					a = survive_p[i];
+					b = p;
+				}
+			}
+			if (player[a].stamina == 0) { return; }
+			if (survive_p[i] == 0) { return; } //0과 만났을 때는 0에게 선택지 부여
+				int a_choose = randint(STR, BYE);
+				if (a_choose == STR) {
+					double real_str_a = (player[a].str + player[a].item.str_buf) * (player[a].stamina / 100.0);
+					double real_str_b = (player[b].str + player[b].item.str_buf) * (player[b].stamina / 100.0);
+					gotoxy(0, N_ROW + 1);
+					printf("%d(%s) 플레이어가 %d(%s) 플레이어에게 강탈을 시도합니다...",a,player[a].name,b, player[b].name);
+					Sleep(1000);
+					gotoxy(0, N_ROW + 1);
+					printf("                                                                                                       ");
+					if (real_str_a > real_str_b) { //성공
+						gotoxy(0, N_ROW + 1);
+						printf("강탈 성공!");
+						Sleep(1000);
+						gotoxy(0, N_ROW + 1);
+						printf("                 ");
+						if (player[b].hasitem == false) { //상대방이 아이템이 없으면
+							gotoxy(0, N_ROW + 1);
+							printf("다른 플레이어가 아이템을 가지고 있지 않습니다!");
+							Sleep(1000);
+							gotoxy(0, N_ROW + 1);
+							printf("                                                                 ");
+						}
+						else {
+							if (player[a].hasitem == true) { // 0이 아이템이 있으면
+								temp[0] = player[a].item;
+								player[a].item = player[b].item;
+								player[b].item = temp[0];
+								change_message(a);
+							}
+							else { // 0이 아이템이 없으면
+								player[a].item = player[b].item;
+								player[b].item = nothing[0];
+								get_message(a);
+							}
+						}
+						player[a].stamina -= 40; //스태미나 소모
+						if (player[a].stamina < 0) { player[a].stamina = 0; }
+						stamina_message(a, 40);
+					}
+					else { //실패
+						gotoxy(0, N_ROW + 1);
+						printf("강탈 실패!");
+						Sleep(1000);
+						gotoxy(0, N_ROW + 1);
+						printf("                 ");
+						player[a].stamina -= 60;
+						if (player[a].stamina < 0) { player[a].stamina = 0; }
+						stamina_message(a, 60);
+					}
+				}
+				else if (a_choose == INT) {
+					double real_int_a = (player[a].intel + player[a].item.intel_buf) * (player[a].stamina / 100.0);
+					double real_int_b = (player[b].intel + player[b].item.intel_buf) * (player[b].stamina / 100.0);
+					gotoxy(0, N_ROW + 1);
+					printf("%d(%s) 플레이어가 %d(%s) 플레이어에게 회유를 시도합니다...", a, player[a].name, b, player[b].name);
+					Sleep(1000);
+					gotoxy(0, N_ROW + 1);
+					printf("                                                                                                       ");
+					if (real_int_a > real_int_b) { //성공
+						gotoxy(0, N_ROW + 1);
+						printf("회유 성공!");
+						Sleep(1000);
+						gotoxy(0, N_ROW + 1);
+						printf("                 ");
+						if (player[b].hasitem == false) { //상대방이 아이템이 없으면
+							gotoxy(0, N_ROW + 1);
+							printf("다른 플레이어가 아이템을 가지고 있지 않습니다!");
+							Sleep(1000);
+							gotoxy(0, N_ROW + 1);
+							printf("                                                                 ");
+						}
+						else {
+							if (player[a].hasitem == true) { // 0이 아이템이 있으면
+								temp[0] = player[a].item;
+								player[a].item = player[b].item;
+								player[b].item = temp[0];
+								change_message(a);
+							}
+							else { // 0이 아이템이 없으면
+								player[a].item = player[b].item;
+								player[b].item = nothing[0];
+								get_message(a);
+							}
+						}
+						player[a].stamina -= 20; //스태미나 소모
+						if (player[a].stamina < 0) { player[a].stamina = 0; }
+						stamina_message(a, 20);
+					}
+					else { //실패
+						gotoxy(0, N_ROW + 1);
+						printf("회유 실패!");
+						Sleep(1000);
+						gotoxy(0, N_ROW + 1);
+						printf("                 ");
+						player[a].stamina -= 40;
+						if (player[a].stamina < 0) { player[a].stamina = 0; }
+						stamina_message(a, 40);
+					}
+				}
+				else {
+					gotoxy(0, N_ROW + 1);
+					printf("%d(%s) 플레이어가 %d(%s) 플레이어를 무시하고 지나갑니다...", a, player[a].name, b, player[b].name);
+					Sleep(1000);
+					gotoxy(0, N_ROW + 1);
+					printf("                                                                                                       ");
+				}
 		}
 	}
 }
@@ -958,6 +1088,7 @@ void nightgame(void) {
 				get_item(survive_p[i]);
 				change_item(survive_p[i]);
 				pto0(); // 다른플레이어가 이동해서 0을 만났을때에도 0에게 선택지를 줘야해서 넣음
+				ptop(survive_p[i]);
 			}
 		}
 		display();
