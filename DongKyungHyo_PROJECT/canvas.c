@@ -68,6 +68,18 @@ bool placable(int col, int row) {
 void display(void) {
 	draw();
 	gotoxy(0, N_ROW + 4);  // 추가로 표시할 정보가 있으면 맵과 상태창 사이의 빈 공간에 출력
+	printf("                                                                                        \n");
+	printf("                                                                                        \n");
+	printf("                                                                                        \n");
+	printf("                                                                                        \n");
+	printf("                                                                                        \n");
+	printf("                                                                                        \n");
+	printf("                                                                                        \n");
+	printf("                                                                                        \n");
+	printf("                                                                                        \n");
+	printf("                                                                                        \n");
+	printf("                                                                                        \n");
+	gotoxy(0, N_ROW + 4);
 	print_status();
 }
 
