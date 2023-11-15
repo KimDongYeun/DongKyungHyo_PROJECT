@@ -84,7 +84,7 @@ int intro(void) {
 int main(void) {
 	jjuggumi_init();
 	intro();
-	//mugunghwa();
+	mugunghwa();
 	nightgame();
 	ending();
 	return 0;

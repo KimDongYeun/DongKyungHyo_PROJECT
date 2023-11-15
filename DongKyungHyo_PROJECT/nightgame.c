@@ -839,6 +839,10 @@ void pto0(void) {
 							player[0].item = player[survive_p[i]].item;
 							player[survive_p[i]].item = temp[0];
 							gotoxy(0, N_ROW + 1);
+							player[0].stamina += player[0].item.stamina_buf;
+							if (player[0].stamina > 100) { player[0].stamina = 100; }
+							player[survive_p[i]].stamina += player[survive_p[i]].item.stamina_buf;
+							if (player[survive_p[i]].stamina > 100) { player[survive_p[i]].stamina = 100; }
 							change_message(0);
 						}
 						else { // 0이 아이템이 없으면
@@ -846,6 +850,8 @@ void pto0(void) {
 							player[survive_p[i]].item = nothing[0];
 							player[survive_p[i]].hasitem = false;
 							player[0].hasitem = true;
+							player[0].stamina += player[0].item.stamina_buf;
+							if (player[0].stamina > 100) { player[0].stamina = 100; }
 							get_message(0);
 						}
 					}
@@ -890,6 +896,10 @@ void pto0(void) {
 							temp[0] = player[0].item;
 							player[0].item = player[survive_p[i]].item;
 							player[survive_p[i]].item = temp[0];
+							player[0].stamina += player[0].item.stamina_buf;
+							if (player[0].stamina > 100) { player[0].stamina = 100; }
+							player[survive_p[i]].stamina += player[survive_p[i]].item.stamina_buf;
+							if (player[survive_p[i]].stamina > 100) { player[survive_p[i]].stamina = 100; }
 							change_message(0);
 						}
 						else { // 0이 아이템이 없으면
@@ -897,6 +907,8 @@ void pto0(void) {
 							player[survive_p[i]].item = nothing[0];
 							player[survive_p[i]].hasitem = false;
 							player[0].hasitem = true;
+							if (player[0].stamina > 100) { player[0].stamina = 100; }
+							player[survive_p[i]].stamina += player[survive_p[i]].item.stamina_buf;
 							get_message(0);
 						}
 					}
@@ -973,6 +985,10 @@ void pmoveto0(int p) {
 							player[0].item = player[p].item;
 							player[p].item = temp[0];
 							gotoxy(0, N_ROW + 1);
+							player[0].stamina += player[0].item.stamina_buf;
+							if (player[0].stamina > 100) { player[0].stamina = 100; }
+							player[p].stamina += player[p].item.stamina_buf;
+							if (player[p].stamina > 100) { player[p].stamina = 100; }
 							change_message(0);
 						}
 						else { // 0이 아이템이 없으면
@@ -980,6 +996,8 @@ void pmoveto0(int p) {
 							player[p].item = nothing[0];
 							player[p].hasitem = false;
 							player[0].hasitem = true;
+							player[0].stamina += player[0].item.stamina_buf;
+							if (player[0].stamina > 100) { player[0].stamina = 100; }
 							get_message(0);
 						}
 					}
@@ -1024,6 +1042,10 @@ void pmoveto0(int p) {
 							temp[0] = player[0].item;
 							player[0].item = player[p].item;
 							player[p].item = temp[0];
+							player[0].stamina += player[0].item.stamina_buf;
+							if (player[0].stamina > 100) { player[0].stamina = 100; }
+							player[p].stamina += player[p].item.stamina_buf;
+							if (player[p].stamina > 100) { player[p].stamina = 100; }
 							change_message(0);
 						}
 						else { // 0이 아이템이 없으면
@@ -1031,6 +1053,8 @@ void pmoveto0(int p) {
 							player[p].item = nothing[0];
 							player[p].hasitem = false;
 							player[0].hasitem = true;
+							player[0].stamina += player[0].item.stamina_buf;
+							if (player[0].stamina > 100) { player[0].stamina = 100; }
 							get_message(0);
 						}
 					}
@@ -1115,6 +1139,10 @@ void ptop(int p) {
 								temp[0] = player[a].item;
 								player[a].item = player[b].item;
 								player[b].item = temp[0];
+								player[a].stamina += player[a].item.stamina_buf;
+								if (player[a].stamina > 100) { player[a].stamina = 100; }
+								player[b].stamina += player[b].item.stamina_buf;
+								if (player[b].stamina > 100) { player[b].stamina = 100; }
 								change_message(a);
 							}
 							else { // a가 아이템이 없으면
@@ -1122,6 +1150,8 @@ void ptop(int p) {
 								player[b].item = nothing[0];
 								player[b].hasitem = false;
 								player[a].hasitem = true;
+								player[a].stamina += player[a].item.stamina_buf;
+								if (player[a].stamina > 100) { player[a].stamina = 100; }
 								get_message(a);
 							}
 						}
@@ -1166,6 +1196,10 @@ void ptop(int p) {
 								temp[0] = player[a].item;
 								player[a].item = player[b].item;
 								player[b].item = temp[0];
+								player[a].stamina += player[a].item.stamina_buf;
+								if (player[a].stamina > 100) { player[a].stamina = 100; }
+								player[b].stamina += player[b].item.stamina_buf;
+								if (player[b].stamina > 100) { player[b].stamina = 100; }
 								change_message(a);
 							}
 							else { // a가 아이템이 없으면
@@ -1173,6 +1207,8 @@ void ptop(int p) {
 								player[b].item = nothing[0];
 								player[b].hasitem = false;
 								player[a].hasitem = true;
+								player[a].stamina += player[a].item.stamina_buf;
+								if (player[a].stamina > 100) { player[a].stamina = 100; }
 								get_message(a);
 							}
 						}
@@ -1212,6 +1248,10 @@ void nightgame(void) {
 		// player 0만 손으로 움직임(4방향)
 		key_t key = get_key();
 		if (key == K_QUIT) {
+			for (int i = 0; i < cnt; i++) {
+				player[survive_p[i]].stamina += 50;
+				if (player[survive_p[i]].stamina > 100) { player[survive_p[i]].stamina = 100; }
+			}
 			break;
 		}
 		else if (key != K_UNDEFINED) {
