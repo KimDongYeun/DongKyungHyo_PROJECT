@@ -647,10 +647,18 @@ void get_message(int p) {
 void change_message(int p) {
 	display();
 	gotoxy(0, N_ROW + 1);
-	printf("%d 플레이어가 '%s'(으)로 아이템을 교환했습니다.",p,player[p].item.name);
+	printf("%d 플레이어가 아이템을 '%s'(으)로 교환했습니다.",p,player[p].item.name);
 	Sleep(1000);
 	gotoxy(0, N_ROW + 1);
 	printf("                                                             ");
+}
+
+void stamina_message(int p,int sta) {
+	gotoxy(0, N_ROW + 1);
+	printf("%d 플레이어가 스태미나를 %d 소모합니다.", p, sta);
+	Sleep(1000);
+	gotoxy(0, N_ROW + 1);
+	printf("                                                              ");
 }
 
 void get_item(int p) {
@@ -786,7 +794,7 @@ void change_item(int p) {
 
 void pto0(void) {
 	display();
-	if (player[0].stamina == 0) { return 0; } //스태미나 0이면 상호작용 불가
+	if (player[0].stamina == 0) { return; } //스태미나 0이면 상호작용 불가
 	int choose;
 	ITEM temp[ITEM_MAX];
 	ITEM nothing[1] = { 0 }; //강탈 시 0으로 덮어줄 변수
@@ -799,28 +807,83 @@ void pto0(void) {
 			gotoxy(25, 6);
 			printf("1)강탈시도   2)회유시도   3)무시 (1/2/3) :");
 			scanf_s("%d", &choose);
+			gotoxy(25, 4);
+			printf("                                   ");
+			gotoxy(25, 5);
+			printf("                                    ");
+			gotoxy(25, 6);
+			printf("                                                   ");
 			if (choose == STR) { //강탈 시도
-				double real_str_0 = (player[0].str + player[0].item.str_buf) * (player[0].stamina/100.0);
-				double real_str_p = (player[survive_p[i]].str + player[survive_p[i]].item.str_buf) * (player[survive_p[i]].stamina/100.0);
+				double real_str_0 = (player[0].str + player[0].item.str_buf) * (player[0].stamina / 100.0);
+				double real_str_p = (player[survive_p[i]].str + player[survive_p[i]].item.str_buf) * (player[survive_p[i]].stamina / 100.0);
+				gotoxy(0, N_ROW + 1);
+				printf("강탈을 시도합니다...");
+				Sleep(500);
+				gotoxy(0, N_ROW + 1);
+				printf("                            ");
 				if (real_str_0 > real_str_p) { //성공
-					if (player[0].hasitem == true) { //0이 아이템이 있으면
+					gotoxy(0, N_ROW + 1);
+					printf("강탈 성공!");
+					Sleep(500);
+					gotoxy(0, N_ROW + 1);
+					printf("                 ");
+					if (player[survive_p[i]].hasitem == false) { //상대방이 아이템이 없으면
+						gotoxy(0, N_ROW + 1);
+						printf("다른 플레이어가 아이템을 가지고 있지 않습니다!");
+						Sleep(1000);
+						gotoxy(0, N_ROW + 1);
+						printf("                                                                 ");
+					}
+					else {
+						if (player[0].hasitem == true) { // 0이 아이템이 있으면
+							temp[0] = player[0].item;
+							player[0].item = player[i].item;
+							player[i].item = temp[0];
+							gotoxy(0, N_ROW + 1);
+							change_message(0);
+						}
+						else { // 0이 아이템이 없으면
+							player[0].item = player[i].item;
+							player[i].item = nothing[0];
+							get_message(0);
+						}
+					}
+					player[0].stamina -= 40; //스태미나 소모
+					if (player[0].stamina < 0) { player[0].stamina = 0; }
+					gotoxy(0, N_ROW + 1);
+					stamina_message(0, 40);
+				}
+				else { //실패
+					gotoxy(0, N_ROW + 1);
+					printf("강탈 실패!");
+					Sleep(500);
+					gotoxy(0, N_ROW + 1);
+					printf("                 ");
+					player[0].stamina -= 60;
+					if (player[0].stamina < 0) { player[0].stamina = 0; }
+					stamina_message(0, 60);
+				}
+			}
+			else if (choose == INT) { //회유 시도
+				double real_int_0 = (player[0].intel + player[0].item.intel_buf) * (player[0].stamina / 100.0);
+				double real_int_p = (player[survive_p[i]].intel + player[survive_p[i]].item.intel_buf) * (player[survive_p[i]].stamina / 100.0);
+				if (real_int_0 > real_int_p) { //성공
+					if (player[0].hasitem == true) { // 0이 아이템이 있으면
 						temp[0] = player[0].item;
 						player[0].item = player[i].item;
 						player[i].item = temp[0];
 					}
-					else{ // 0이 아이템이 없으면
+					else { // 0이 아이템이 없으면
 						player[0].item = player[i].item;
 						player[i].item = nothing[0];
 					}
-					player[0].stamina -= 40; //스태미나 소모
-					if (player[0].stamina < 0) {player[0].stamina = 0;}
+					player[0].stamina -= 20; //스태미나 소모
+					if (player[0].stamina < 0) { player[0].stamina = 0; }
 				}
 				else { //실패
-					player[0].stamina -= 60;
+					player[0].stamina -= 40;
+					if (player[0].stamina < 0) { player[0].stamina = 0; }
 				}
-			}
-			else if (choose == INT) {
-
 			}
 			else {
 
@@ -846,6 +909,7 @@ void nightgame(void) {
 			if (survive_p[0] == 0) { // 무궁화에서 0이 죽었을 때 생각해서 살았을 때만 
 				get_item(survive_p[0]);
 				change_item_0();
+				pto0();
 			}
 		}
 		// player 1 부터는 랜덤으로 움직임(8방향)
