@@ -654,7 +654,6 @@ void change_message(int p) {
 }
 
 void get_item(int p) {
-	int get_flag = 0;
 	for (int i = -1; i <= 1; i += 2) { // 위 아래
 		if (back_buf[py[p] + i][px[p]] == 'I'&& player[p].hasitem==false) {
 			back_buf[py[p] + i][px[p]] = ' ';
@@ -662,7 +661,9 @@ void get_item(int p) {
 			for (int j = 0; j < item_cnt;j++) {
 				if (py[p]+i==iy[j]&&px[p]==ix[j]) {
 					player[p].item = night_item[j];
-					get_flag = 1;
+					player[p].stamina += player[p].item.stamina_buf;
+					if (player[p].stamina > 100) { player[p].stamina = 100;}
+					get_message(p);
 				}
 			}
 		}
@@ -674,13 +675,12 @@ void get_item(int p) {
 			for (int j = 0; j < item_cnt; j++) {
 				if (py[p] == iy[j] && px[p] + i == ix[j]) {
 					player[p].item = night_item[j];
-					get_flag = 1;
+					player[p].stamina += player[p].item.stamina_buf;
+					if (player[p].stamina > 100) { player[p].stamina = 100; }
+					get_message(p);
 				}
 			}
 		}
-	}
-	if (get_flag == 1) {
-		get_message(p);
 	}
 }
 
@@ -692,8 +692,7 @@ void first_lucky(void) {
 
 void change_item_0(void) {
 	display();
-	ITEM temp[10];
-	int change_flag = 0;
+	ITEM temp[ITEM_MAX];
 	for (int i = -1; i <= 1; i += 2) { // 위 아래
 		if (back_buf[py[0] + i][px[0]] == 'I' && player[0].hasitem == true) {
 			int choose;
@@ -708,7 +707,9 @@ void change_item_0(void) {
 						temp[0] = player[0].item;
 						player[0].item = night_item[j];
 						night_item[j] = temp[0];
-						change_flag = 1;
+						player[0].stamina += player[0].item.stamina_buf;
+						if (player[0].stamina > 100) { player[0].stamina = 100; }
+						change_message(0);
 					}
 				}
 			}
@@ -732,7 +733,9 @@ void change_item_0(void) {
 						temp[0] = player[0].item;
 						player[0].item = night_item[j];
 						night_item[j] = temp[0];
-						change_flag = 1;
+						player[0].stamina += player[0].item.stamina_buf;
+						if (player[0].stamina > 100) { player[0].stamina = 100; }
+						change_message(0);
 					}
 				}
 			}
@@ -742,13 +745,9 @@ void change_item_0(void) {
 			printf("                                                              ");
 		}
 	}
-	if (change_flag == 1) {
-		change_message(0);
-	}
 }
 void change_item(int p) {
-	ITEM temp[10];
-	int change_flag = 0;
+	ITEM temp[ITEM_MAX];
 	for (int i = -1; i <= 1; i += 2) { // 위 아래
 		if (back_buf[py[p] + i][px[p]] == 'I' && player[0].hasitem == true) {
 			int g_or_not = randint(CHA,IGN);
@@ -758,7 +757,9 @@ void change_item(int p) {
 						temp[p] = player[p].item;
 						player[p].item = night_item[j];
 						night_item[j] = temp[p];
-						change_flag = 1;
+						player[p].stamina += player[p].item.stamina_buf;
+						if (player[p].stamina > 100) { player[p].stamina = 100; }
+						change_message(0);
 					}
 				}
 			}
@@ -773,20 +774,22 @@ void change_item(int p) {
 						temp[p] = player[p].item;
 						player[p].item = night_item[j];
 						night_item[j] = temp[p];
-						change_flag = 1;
+						player[p].stamina += player[p].item.stamina_buf;
+						if (player[p].stamina > 100) { player[p].stamina = 100; }
+						change_message(0);
 					}
 				}
 			}
 		}
 	}
-	if (change_flag == 1) {
-		change_message(0);
-	}
 }
 
 void pto0(void) {
 	display();
+	if (player[0].stamina == 0) { return 0; } //스태미나 0이면 상호작용 불가
 	int choose;
+	ITEM temp[ITEM_MAX];
+	ITEM nothing[1] = { 0 }; //강탈 시 0으로 덮어줄 변수
 	for (int i = 0; i < cnt; i++) {
 		if (back_buf[py[0] + 1][px[0]] == '0' + survive_p[i] || back_buf[py[0] - 1][px[0]] == '0' + survive_p[i] || back_buf[py[0]][px[0] + 1] == '0' + survive_p[i] || back_buf[py[0]][px[0] - 1] == '0' + survive_p[i]) {
 			gotoxy(25, 4);
@@ -796,8 +799,25 @@ void pto0(void) {
 			gotoxy(25, 6);
 			printf("1)강탈시도   2)회유시도   3)무시 (1/2/3) :");
 			scanf_s("%d", &choose);
-			if (choose == STR) {
-
+			if (choose == STR) { //강탈 시도
+				double real_str_0 = (player[0].str + player[0].item.str_buf) * (player[0].stamina/100.0);
+				double real_str_p = (player[survive_p[i]].str + player[survive_p[i]].item.str_buf) * (player[survive_p[i]].stamina/100.0);
+				if (real_str_0 > real_str_p) { //성공
+					if (player[0].hasitem == true) { //0이 아이템이 있으면
+						temp[0] = player[0].item;
+						player[0].item = player[i].item;
+						player[i].item = temp[0];
+					}
+					else{ // 0이 아이템이 없으면
+						player[0].item = player[i].item;
+						player[i].item = nothing[0];
+					}
+					player[0].stamina -= 40; //스태미나 소모
+					if (player[0].stamina < 0) {player[0].stamina = 0;}
+				}
+				else { //실패
+					player[0].stamina -= 60;
+				}
 			}
 			else if (choose == INT) {
 
