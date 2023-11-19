@@ -82,8 +82,9 @@ int intro(void) {
 
 int main(void) {
 	jjuggumi_init();
-	intro();
-	mugunghwa();
+	//intro();
+	//mugunghwa();
+	juldarigi();
 	ending();
 	return 0;
 }
