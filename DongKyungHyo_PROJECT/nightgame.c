@@ -16,7 +16,7 @@
 #define INT		2
 #define BYE		3
 int cnt = 0;
-int survive_p[PLAYER_MAX];
+int survive_player[PLAYER_MAX];
 int item_cnt;
 ITEM night_item[ITEM_MAX];
 int item_num[4];
@@ -27,7 +27,7 @@ void nightgame_init(void) {
 	int x, y;
 	for (int i = 0; i < n_player; i++) {
 		if (player[i].is_alive == true) {
-			survive_p[cnt] = i;
+			survive_player[cnt] = i;
 			cnt++;
 		}
 	}
@@ -37,11 +37,11 @@ void nightgame_init(void) {
 			y = randint(1, N_ROW - 2);
 			x = randint(1, N_COL - 2);
 		} while (!placable(x, y));
-		px[survive_p[i]] = x;
-		py[survive_p[i]] = y;
-		period[survive_p[i]] = randint(300, 500);
+		px[survive_player[i]] = x;
+		py[survive_player[i]] = y;
+		period[survive_player[i]] = randint(300, 500);
 
-		back_buf[py[survive_p[i]]][px[survive_p[i]]] = '0' + survive_p[i];  // (0 .. n_player-1)
+		back_buf[py[survive_player[i]]][px[survive_player[i]]] = '0' + survive_player[i];  // (0 .. n_player-1)
 	}
 	item_cnt = randint(1, 4);
 	for (int i = 0; i < item_cnt; i++) {
@@ -121,7 +121,7 @@ void move_rand(int p) {
 							flag = 1;
 						}
 					}
-					else if (back_buf[py[p] + j][px[p] + i] == '0' + survive_p[k]&& player[survive_p[k]].hasitem == true&&flag==0) {
+					else if (back_buf[py[p] + j][px[p] + i] == '0' + survive_player[k]&& player[survive_player[k]].hasitem == true&&flag==0) {
 							nx = px[p] + i;
 							ny = py[p];
 							flag = 1;
@@ -142,7 +142,7 @@ void move_rand(int p) {
 						ny = py[p] - 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] - 2] == '0' + survive_p[k]&& player[survive_p[k]].hasitem == true&&flag==0) {
+					else if (back_buf[py[p] + i][px[p] - 2] == '0' + survive_player[k]&& player[survive_player[k]].hasitem == true&&flag==0) {
 							nx = px[p] - 1;
 							ny = py[p] - 1;
 							flag = 1;
@@ -155,7 +155,7 @@ void move_rand(int p) {
 					ny = py[p];
 					flag = 1;
 				}
-				else if (back_buf[py[p]][px[p] - 2] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true&& flag == 0) {
+				else if (back_buf[py[p]][px[p] - 2] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true&& flag == 0) {
 						nx = px[p] - 1;
 						ny = py[p];
 						flag = 1;
@@ -168,7 +168,7 @@ void move_rand(int p) {
 						ny = py[p] + 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] - 2] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] - 2] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 						nx = px[p] - 1;
 						ny = py[p] + 1;
 						flag = 1;
@@ -182,7 +182,7 @@ void move_rand(int p) {
 						ny = py[p] - 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] + 2] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] + 2] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 						nx = px[p] + 1;
 						ny = py[p] - 1;
 						flag = 1;
@@ -195,7 +195,7 @@ void move_rand(int p) {
 					ny = py[p];
 					flag = 1;
 				}
-				else if (back_buf[py[p]][px[p] + 2] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+				else if (back_buf[py[p]][px[p] + 2] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 					nx = px[p] + 1;
 					ny = py[p];
 					flag = 1;
@@ -208,7 +208,7 @@ void move_rand(int p) {
 						ny = py[p] + 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] + 2] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] + 2] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 						nx = px[p] + 1;
 						ny = py[p] + 1;
 						flag = 1;
@@ -222,7 +222,7 @@ void move_rand(int p) {
 						ny = py[p] - 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] - 2][px[p] + i] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+					else if (back_buf[py[p] - 2][px[p] + i] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 						nx = px[p];
 						ny = py[p] - 1;
 						flag = 1;
@@ -236,7 +236,7 @@ void move_rand(int p) {
 						ny = py[p] + 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + 2][px[p] + i] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+					else if (back_buf[py[p] + 2][px[p] + i] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 						nx = px[p];
 						ny = py[p] + 1;
 						flag = 1;
@@ -252,7 +252,7 @@ void move_rand(int p) {
 						ny = py[p] - 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] - 3] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] - 3] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 						nx = px[p] - 1;
 						ny = py[p] - 1;
 						flag = 1;
@@ -265,7 +265,7 @@ void move_rand(int p) {
 					ny = py[p];
 					flag = 1;
 				}
-				else if (back_buf[py[p]][px[p] - 3] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+				else if (back_buf[py[p]][px[p] - 3] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 					nx = px[p] - 1;
 					ny = py[p];
 					flag = 1;
@@ -278,7 +278,7 @@ void move_rand(int p) {
 						ny = py[p] + 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] - 3] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] - 3] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 						nx = px[p] - 1;
 						ny = py[p] + 1;
 						flag = 1;
@@ -292,7 +292,7 @@ void move_rand(int p) {
 						ny = py[p] - 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] + 3] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] + 3] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 						nx = px[p] + 1;
 						ny = py[p] - 1;
 						flag = 1;
@@ -305,7 +305,7 @@ void move_rand(int p) {
 					ny = py[p];
 					flag = 1;
 				}
-				else if (back_buf[py[p]][px[p] + 3] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+				else if (back_buf[py[p]][px[p] + 3] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 					nx = px[p] + 1;
 					ny = py[p];
 					flag = 1;
@@ -318,7 +318,7 @@ void move_rand(int p) {
 						ny = py[p] + 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] + 3] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] + 3] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 						nx = px[p] + 1;
 						ny = py[p] + 1;
 						flag = 1;
@@ -332,7 +332,7 @@ void move_rand(int p) {
 						ny = py[p] - 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] - 3][px[p] + i] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+					else if (back_buf[py[p] - 3][px[p] + i] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 						nx = px[p];
 						ny = py[p] - 1;
 						flag = 1;
@@ -346,7 +346,7 @@ void move_rand(int p) {
 						ny = py[p] + 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + 3][px[p] + i] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+					else if (back_buf[py[p] + 3][px[p] + i] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 						nx = px[p];
 						ny = py[p] + 1;
 						flag = 1;
@@ -362,7 +362,7 @@ void move_rand(int p) {
 						ny = py[p] - 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] - 4] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] - 4] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 						nx = px[p] - 1;
 						ny = py[p] - 1;
 						flag = 1;
@@ -375,7 +375,7 @@ void move_rand(int p) {
 					ny = py[p];
 					flag = 1;
 				}
-				else if (back_buf[py[p]][px[p] - 4] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+				else if (back_buf[py[p]][px[p] - 4] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 					nx = px[p] - 1;
 					ny = py[p];
 					flag = 1;
@@ -388,7 +388,7 @@ void move_rand(int p) {
 						ny = py[p] + 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] - 4] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] - 4] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 						nx = px[p] - 1;
 						ny = py[p] + 1;
 						flag = 1;
@@ -402,7 +402,7 @@ void move_rand(int p) {
 						ny = py[p] - 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] + 4] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] + 4] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 						nx = px[p] + 1;
 						ny = py[p] - 1;
 						flag = 1;
@@ -415,7 +415,7 @@ void move_rand(int p) {
 					ny = py[p];
 					flag = 1;
 				}
-				else if (back_buf[py[p]][px[p] + 4] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+				else if (back_buf[py[p]][px[p] + 4] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 					nx = px[p] + 1;
 					ny = py[p];
 					flag = 1;
@@ -428,7 +428,7 @@ void move_rand(int p) {
 						ny = py[p] + 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] + 4] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] + 4] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 						nx = px[p] + 1;
 						ny = py[p] + 1;
 						flag = 1;
@@ -442,7 +442,7 @@ void move_rand(int p) {
 						ny = py[p] - 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] - 4][px[p] + i] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+					else if (back_buf[py[p] - 4][px[p] + i] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 						nx = px[p];
 						ny = py[p] - 1;
 						flag = 1;
@@ -456,7 +456,7 @@ void move_rand(int p) {
 						ny = py[p] + 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + 4][px[p] + i] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+					else if (back_buf[py[p] + 4][px[p] + i] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 						nx = px[p];
 						ny = py[p] + 1;
 						flag = 1;
@@ -472,7 +472,7 @@ void move_rand(int p) {
 						ny = py[p] - 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] - 5] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] - 5] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 						nx = px[p] - 1;
 						ny = py[p] - 1;
 						flag = 1;
@@ -485,7 +485,7 @@ void move_rand(int p) {
 					ny = py[p];
 					flag = 1;
 				}
-				else if (back_buf[py[p]][px[p] - 5] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+				else if (back_buf[py[p]][px[p] - 5] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 					nx = px[p] - 1;
 					ny = py[p];
 					flag = 1;
@@ -498,7 +498,7 @@ void move_rand(int p) {
 						ny = py[p] + 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] - 5] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] - 5] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 						nx = px[p] - 1;
 						ny = py[p] + 1;
 						flag = 1;
@@ -512,7 +512,7 @@ void move_rand(int p) {
 						ny = py[p] - 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] + 5] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] + 5] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 						nx = px[p] + 1;
 						ny = py[p] - 1;
 						flag = 1;
@@ -525,7 +525,7 @@ void move_rand(int p) {
 					ny = py[p];
 					flag = 1;
 				}
-				else if (back_buf[py[p]][px[p] + 5] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+				else if (back_buf[py[p]][px[p] + 5] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 					nx = px[p] + 1;
 					ny = py[p];
 					flag = 1;
@@ -538,7 +538,7 @@ void move_rand(int p) {
 						ny = py[p] + 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + i][px[p] + 5] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+					else if (back_buf[py[p] + i][px[p] + 5] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 						nx = px[p] + 1;
 						ny = py[p] + 1;
 						flag = 1;
@@ -552,7 +552,7 @@ void move_rand(int p) {
 						ny = py[p] - 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] - 5][px[p] + i] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+					else if (back_buf[py[p] - 5][px[p] + i] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 						nx = px[p];
 						ny = py[p] - 1;
 						flag = 1;
@@ -566,7 +566,7 @@ void move_rand(int p) {
 						ny = py[p] + 1;
 						flag = 1;
 					}
-					else if (back_buf[py[p] + 5][px[p] + i] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+					else if (back_buf[py[p] + 5][px[p] + i] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 						nx = px[p];
 						ny = py[p] + 1;
 						flag = 1;
@@ -584,7 +584,7 @@ void move_rand(int p) {
 							flag = 1;
 							break;
 						}
-						else if (back_buf[py[p] + i][px[p] + j] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+						else if (back_buf[py[p] + i][px[p] + j] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 							nx = px[p] + 1;
 							ny = py[p];
 							flag = 1;
@@ -602,7 +602,7 @@ void move_rand(int p) {
 							flag = 1;
 							break;
 						}
-						else if (back_buf[py[p] + i][px[p] - j] == '0' + survive_p[k] && player[survive_p[k]].hasitem == true && flag == 0) {
+						else if (back_buf[py[p] + i][px[p] - j] == '0' + survive_player[k] && player[survive_player[k]].hasitem == true && flag == 0) {
 							nx = px[p] - 1;
 							ny = py[p];
 							flag = 1;
@@ -693,7 +693,7 @@ void get_item(int p) {
 
 void first_lucky(void) {
 	for (int i = 0; i < cnt; i++) {
-		get_item(survive_p[i]);
+		get_item(survive_player[i]);
 	}
 }
 
@@ -798,7 +798,7 @@ void pto0(void) {
 	ITEM temp[1];
 	ITEM nothing[1] = { 0 }; //강탈 시 0으로 덮어줄 변수
 	for (int i = 0; i < cnt; i++) {
-		if (back_buf[py[0] + 1][px[0]] == '0' + survive_p[i] || back_buf[py[0] - 1][px[0]] == '0' + survive_p[i] || back_buf[py[0]][px[0] + 1] == '0' + survive_p[i] || back_buf[py[0]][px[0] - 1] == '0' + survive_p[i]) {
+		if (back_buf[py[0] + 1][px[0]] == '0' + survive_player[i] || back_buf[py[0] - 1][px[0]] == '0' + survive_player[i] || back_buf[py[0]][px[0] + 1] == '0' + survive_player[i] || back_buf[py[0]][px[0] - 1] == '0' + survive_player[i]) {
 			gotoxy(25, 4);
 			printf("다른 플레이어와 만났습니다!");
 			gotoxy(25, 5);
@@ -814,7 +814,7 @@ void pto0(void) {
 			printf("                                                   ");
 			if (choose == STR) { //강탈 시도
 				double real_str_0 = (player[0].str + player[0].item.str_buf) * (player[0].stamina / 100.0);
-				double real_str_p = (player[survive_p[i]].str + player[survive_p[i]].item.str_buf) * (player[survive_p[i]].stamina / 100.0);
+				double real_str_p = (player[survive_player[i]].str + player[survive_player[i]].item.str_buf) * (player[survive_player[i]].stamina / 100.0);
 				gotoxy(0, N_ROW + 1);
 				printf("강탈을 시도합니다...");
 				Sleep(1000);
@@ -826,7 +826,7 @@ void pto0(void) {
 					Sleep(1000);
 					gotoxy(0, N_ROW + 1);
 					printf("                 ");
-					if (player[survive_p[i]].hasitem == false) { //상대방이 아이템이 없으면
+					if (player[survive_player[i]].hasitem == false) { //상대방이 아이템이 없으면
 						gotoxy(0, N_ROW + 1);
 						printf("다른 플레이어가 아이템을 가지고 있지 않습니다!");
 						Sleep(1000);
@@ -836,19 +836,19 @@ void pto0(void) {
 					else {
 						if (player[0].hasitem == true) { // 0이 아이템이 있으면
 							temp[0] = player[0].item;
-							player[0].item = player[survive_p[i]].item;
-							player[survive_p[i]].item = temp[0];
+							player[0].item = player[survive_player[i]].item;
+							player[survive_player[i]].item = temp[0];
 							gotoxy(0, N_ROW + 1);
 							player[0].stamina += player[0].item.stamina_buf;
 							if (player[0].stamina > 100) { player[0].stamina = 100; }
-							player[survive_p[i]].stamina += player[survive_p[i]].item.stamina_buf;
-							if (player[survive_p[i]].stamina > 100) { player[survive_p[i]].stamina = 100; }
+							player[survive_player[i]].stamina += player[survive_player[i]].item.stamina_buf;
+							if (player[survive_player[i]].stamina > 100) { player[survive_player[i]].stamina = 100; }
 							change_message(0);
 						}
 						else { // 0이 아이템이 없으면
-							player[0].item = player[survive_p[i]].item;
-							player[survive_p[i]].item = nothing[0];
-							player[survive_p[i]].hasitem = false;
+							player[0].item = player[survive_player[i]].item;
+							player[survive_player[i]].item = nothing[0];
+							player[survive_player[i]].hasitem = false;
 							player[0].hasitem = true;
 							player[0].stamina += player[0].item.stamina_buf;
 							if (player[0].stamina > 100) { player[0].stamina = 100; }
@@ -872,7 +872,7 @@ void pto0(void) {
 			}
 			else if (choose == INT) { //회유 시도
 				double real_int_0 = (player[0].intel + player[0].item.intel_buf) * (player[0].stamina / 100.0);
-				double real_int_p = (player[survive_p[i]].intel + player[survive_p[i]].item.intel_buf) * (player[survive_p[i]].stamina / 100.0);
+				double real_int_p = (player[survive_player[i]].intel + player[survive_player[i]].item.intel_buf) * (player[survive_player[i]].stamina / 100.0);
 				gotoxy(0, N_ROW + 1);
 				printf("회유를 시도합니다...");
 				Sleep(1000);
@@ -884,7 +884,7 @@ void pto0(void) {
 					Sleep(1000);
 					gotoxy(0, N_ROW + 1);
 					printf("                 ");
-					if (player[survive_p[i]].hasitem == false) { //상대방이 아이템이 없으면
+					if (player[survive_player[i]].hasitem == false) { //상대방이 아이템이 없으면
 						gotoxy(0, N_ROW + 1);
 						printf("다른 플레이어가 아이템을 가지고 있지 않습니다!");
 						Sleep(1000);
@@ -894,21 +894,21 @@ void pto0(void) {
 					else {
 						if (player[0].hasitem == true) { // 0이 아이템이 있으면
 							temp[0] = player[0].item;
-							player[0].item = player[survive_p[i]].item;
-							player[survive_p[i]].item = temp[0];
+							player[0].item = player[survive_player[i]].item;
+							player[survive_player[i]].item = temp[0];
 							player[0].stamina += player[0].item.stamina_buf;
 							if (player[0].stamina > 100) { player[0].stamina = 100; }
-							player[survive_p[i]].stamina += player[survive_p[i]].item.stamina_buf;
-							if (player[survive_p[i]].stamina > 100) { player[survive_p[i]].stamina = 100; }
+							player[survive_player[i]].stamina += player[survive_player[i]].item.stamina_buf;
+							if (player[survive_player[i]].stamina > 100) { player[survive_player[i]].stamina = 100; }
 							change_message(0);
 						}
 						else { // 0이 아이템이 없으면
-							player[0].item = player[survive_p[i]].item;
-							player[survive_p[i]].item = nothing[0];
-							player[survive_p[i]].hasitem = false;
+							player[0].item = player[survive_player[i]].item;
+							player[survive_player[i]].item = nothing[0];
+							player[survive_player[i]].hasitem = false;
 							player[0].hasitem = true;
 							if (player[0].stamina > 100) { player[0].stamina = 100; }
-							player[survive_p[i]].stamina += player[survive_p[i]].item.stamina_buf;
+							player[survive_player[i]].stamina += player[survive_player[i]].item.stamina_buf;
 							get_message(0);
 						}
 					}
@@ -1090,28 +1090,28 @@ void ptop(int p) {
 	int a = 0, b = 0;
 	int p_or_i = 0;
 	for (int i = 0; i < cnt; i++) {
-		if (back_buf[py[p] + 1][px[p]] == '0' + survive_p[i] || back_buf[py[p] - 1][px[p]] == '0' + survive_p[i] || back_buf[py[p]][px[p] + 1] == '0' + survive_p[i] || back_buf[py[p]][px[p] - 1] == '0' + survive_p[i]) {
-			if (player[p].hasitem == false && player[survive_p[i]].hasitem == true) { //아이템이 p가 없고 상대방이 있는 경우
+		if (back_buf[py[p] + 1][px[p]] == '0' + survive_player[i] || back_buf[py[p] - 1][px[p]] == '0' + survive_player[i] || back_buf[py[p]][px[p] + 1] == '0' + survive_player[i] || back_buf[py[p]][px[p] - 1] == '0' + survive_player[i]) {
+			if (player[p].hasitem == false && player[survive_player[i]].hasitem == true) { //아이템이 p가 없고 상대방이 있는 경우
 				a = p;
-				b = survive_p[i];
+				b = survive_player[i];
 			}
-			else if (player[p].hasitem == true && player[survive_p[i]].hasitem == false) { //아이템이 p가 있고 상대방이 없는 경우
-				a = survive_p[i];
+			else if (player[p].hasitem == true && player[survive_player[i]].hasitem == false) { //아이템이 p가 있고 상대방이 없는 경우
+				a = survive_player[i];
 				b = p;
 			}
 			else { //아이템이 둘다 있거나 없는 경우
 				int p_or_i = randint(1, 2);
 				if (p_or_i == 1) {
 					a = p;
-					b = survive_p[i];
+					b = survive_player[i];
 				}
 				else {
-					a = survive_p[i];
+					a = survive_player[i];
 					b = p;
 				}
 			}
 			if (player[a].stamina == 0) { return; }
-			if (survive_p[i] == 0) { return; } //0과 만났을 때는 0에게 선택지 부여해야하므로 pass
+			if (survive_player[i] == 0) { return; } //0과 만났을 때는 0에게 선택지 부여해야하므로 pass
 				int a_choose = randint(STR, BYE);
 				if (a_choose == STR) {
 					double real_str_a = (player[a].str + player[a].item.str_buf) * (player[a].stamina / 100.0);
@@ -1249,27 +1249,27 @@ void nightgame(void) {
 		key_t key = get_key();
 		if (key == K_QUIT) {
 			for (int i = 0; i < cnt; i++) {
-				player[survive_p[i]].stamina += 50;
-				if (player[survive_p[i]].stamina > 100) { player[survive_p[i]].stamina = 100; }
+				player[survive_player[i]].stamina += 50;
+				if (player[survive_player[i]].stamina > 100) { player[survive_player[i]].stamina = 100; }
 			}
 			break;
 		}
 		else if (key != K_UNDEFINED) {
 			move_0_manual(key);
-			if (survive_p[0] == 0) { // 무궁화에서 0이 죽었을 때 생각해서 살았을 때만 
-				get_item(survive_p[0]);
+			if (survive_player[0] == 0) { // 무궁화에서 0이 죽었을 때 생각해서 살았을 때만 
+				get_item(survive_player[0]);
 				change_item_0();
 				pto0();
 			}
 		}
 		// player 1 부터는 랜덤으로 움직임(8방향)
 		for (int i = 0; i < cnt; i++) {
-			if (tick % period[survive_p[i]] == 0&&survive_p[i]!=0) {
-				move_rand(survive_p[i]);
-				get_item(survive_p[i]);
-				change_item(survive_p[i]);
-				pmoveto0(survive_p[i]); // 다른플레이어가 이동해서 0을 만났을때에도 0에게 선택지를 줘야해서 넣음
-				ptop(survive_p[i]);
+			if (tick % period[survive_player[i]] == 0&&survive_player[i]!=0) {
+				move_rand(survive_player[i]);
+				get_item(survive_player[i]);
+				change_item(survive_player[i]);
+				pmoveto0(survive_player[i]); // 다른플레이어가 이동해서 0을 만났을때에도 0에게 선택지를 줘야해서 넣음
+				ptop(survive_player[i]);
 			}
 		}
 		display();
