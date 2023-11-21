@@ -29,14 +29,6 @@ int n_player, n_item, n_alive;
 int tick;  // 시계
 int px[PLAYER_MAX], py[PLAYER_MAX], period[PLAYER_MAX],ix[ITEM_MAX],iy[ITEM_MAX];
 
-void result_0();
-
-void return_num();
-
-void after0();
-
-void after0dead();
-
 // 미니게임
 //void sample(void);
 //void mugunghwa(void);
