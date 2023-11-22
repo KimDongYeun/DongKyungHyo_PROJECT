@@ -14,6 +14,7 @@
 #define K_RIGHT		77
 #define K_QUIT		'q'
 #define K_UNDEFINED	'\0'
+#define K_SPACE		32
 
 typedef int key_t;
 

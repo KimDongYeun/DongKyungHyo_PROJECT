@@ -69,6 +69,7 @@ int jjuggumi_init(void) {
 	}
 
 	fclose(fp);
+	n_alive = n_player;
 	return 0;
 }
 
@@ -83,7 +84,9 @@ int intro(void) {
 int main(void) {
 	jjuggumi_init();
 	intro();
-	mugunghwa();
+	//mugunghwa();
+	//nightgame();
+	jebi();
 	ending();
 	return 0;
 }

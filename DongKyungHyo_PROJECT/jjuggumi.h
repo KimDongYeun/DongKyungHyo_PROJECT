@@ -27,14 +27,14 @@ PLAYER player[PLAYER_MAX];
 ITEM item[ITEM_MAX];
 int n_player, n_item, n_alive;
 int tick;  // 시계
-int px[PLAYER_MAX], py[PLAYER_MAX], period[PLAYER_MAX];
+int px[PLAYER_MAX], py[PLAYER_MAX], period[PLAYER_MAX],ix[ITEM_MAX],iy[ITEM_MAX];
 
 // 미니게임
 //void sample(void);
-void mugunghwa(void);
+//void mugunghwa(void);
 //void nightgame(void);
 //void juldarigi(void);
-//void jebi(void);
+void jebi(void);
 
 int randint(int low, int high);
 

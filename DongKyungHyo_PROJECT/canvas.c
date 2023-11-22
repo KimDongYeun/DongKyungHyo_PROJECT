@@ -64,6 +64,16 @@ bool placable(int col, int row) {
 	return true;
 }
 
+bool placable_j(int col, int row) {
+	if (row < 0 || row >= N_ROW ||
+		col < 0 || col >= N_COL ||
+		back_buf[row][col] == '*'||
+		back_buf[row][col] == ' ') {
+		return false;
+	}
+	return true;
+}
+
 // 상단에 맵을, 하단에는 현재 상태를 출력
 void display(void) {
 	draw();
@@ -316,3 +326,77 @@ void dialog(char message[]) {
 		}
 	}
 }
+
+	void dialog_jebi(int failer,char message[]) {
+		for (int i = 0; i < N_ROW; i++) {
+			for (int j = 0; j < N_COL; j++) {
+				backup[i][j] = back_buf[i][j];
+			}
+		} //전 화면 복사해놓기
+
+		int message_row = N_ROW / 2;
+		//메시지 출력할 곳
+
+		int time = DIALOG_DURATION_SEC;
+
+		while (time >= 0) {
+			if (time > 0) {
+				//메시지 칸 들어갈 곳에 있는 거 다 없애기
+				for (int i = N_COL / 10 - 1; i < N_COL - N_COL / 10 + 1; i++) {
+					printxy(' ', i, message_row - 1);
+				}
+				for (int i = N_COL / 10 - 1; i < N_COL - N_COL / 10 + 1; i++) {
+					printxy(' ', i, message_row);
+				}
+				for (int i = N_COL / 10 - 1; i < N_COL - N_COL / 10 + 1; i++) {
+					printxy(' ', i, message_row + 1);
+				}
+
+				//메시지 창 출력
+				gotoxy(1, message_row - 1);
+				for (int i = 0; i <= 22; i++) {
+					printf("*");
+				} //위쪽 * 출력
+
+				gotoxy(1, message_row);
+				for (int i = 0; i < 1; i++) {
+					printf("*");
+				} // 메시지 앞 *  출력
+
+				gotoxy(3, message_row); //남은 시간 출력
+				printf("%d  player %d %s!", time,failer,message);
+
+				gotoxy(23, message_row); //dialog 뒤 * 출력
+				for (int i = 0; i < 1; i++) {
+					printf("*");
+				}
+
+				gotoxy(1, message_row + 1); //아래쪽 * 출력
+				for (int i = 0; i <= 22; i++) {
+					printf("*");
+				}
+
+				Sleep(1000); //1초 대기
+			}
+			else if (time == 0) { //남은 시간이 0일때 메시지창 없애기
+				for (int i = 1; i < 24; i++) {
+					printxy(' ', i, message_row - 1);
+				}
+				for (int i = 1; i < 24; i++) {
+					printxy(' ', i, message_row);
+				}
+				for (int i = 1; i < 24; i++) {
+					printxy(' ', i, message_row + 1);
+				}
+				draw();
+			}
+			time--;
+		}
+		// 이전 화면을 복구
+		for (int i = 0; i < N_ROW; i++) {
+			for (int j = 0; j < N_COL; j++) {
+				back_buf[i][j] = backup[i][j];
+				printxy(back_buf[i][j], j, i);
+			}
+		}
+	}
