@@ -39,7 +39,7 @@ void nightgame_init(void) {
 		} while (!placable(x, y));
 		px[survive_p[i]] = x;
 		py[survive_p[i]] = y;
-		period[survive_p[i]] = randint(300, 500);
+		period[survive_p[i]] = randint(200, 300);
 
 		back_buf[py[survive_p[i]]][px[survive_p[i]]] = '0' + survive_p[i];  // (0 .. n_player-1)
 	}
@@ -1240,7 +1240,6 @@ void ptop(int p) {
 
 void nightgame(void) {
 	nightgame_init();
-	left_player();
 	system("cls");
 	display();
 	first_lucky(); //처음 랜덤 배정에서 아이템이 바로 옆에 있으면 get
@@ -1268,7 +1267,9 @@ void nightgame(void) {
 				move_rand(survive_p[i]);
 				get_item(survive_p[i]);
 				change_item(survive_p[i]);
-				pmoveto0(survive_p[i]); // 다른플레이어가 이동해서 0을 만났을때에도 0에게 선택지를 줘야해서 넣음
+				if (survive_p[0] == 0) {
+					pmoveto0(survive_p[i]); // 다른플레이어가 이동해서 0을 만났을때에도 0에게 선택지를 줘야해서 넣음
+				}
 				ptop(survive_p[i]);
 			}
 		}

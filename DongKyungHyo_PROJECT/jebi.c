@@ -152,6 +152,7 @@ void next_round(void) {
 	int x, y;
 	cntt = 0;
 	round+=1;
+	n_alive--;
 	for (int i = 0; i < n_player; i++) {
 		if (player[i].is_alive == true) {
 			survive_player[cntt] = i;
@@ -246,7 +247,7 @@ void result_num(void)
 			}
 		}
 		for (int i = pick_other; i < cntt; i++) {
-			back_buf[jy[i]][jx[i]] = ' '; //0이 fail 시 cntt 리셋시키는 것 때문에 경고나는건데 0 pass시에만 작용하도록 조건 설정해서 오류 안남
+			back_buf[jy[i]][jx[i]] = ' '; //0이 fail 시 cntt 리셋시키는 것 때문에 버퍼 오버플로우 경고나는건데 0 pass시에만 작용하도록 조건 설정해서 오류 안남
 			jx[i] -= 3;
 			back_buf[jy[i]][jx[i]] = '?';
 		}
