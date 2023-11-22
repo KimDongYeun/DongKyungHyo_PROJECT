@@ -233,6 +233,7 @@ void result_num(void)
 			
 			flaggg = 1;
 			did0 = 0;
+			break;
 		}
 	}
 	if (flaggg == 0) {
