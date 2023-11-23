@@ -643,6 +643,15 @@ void get_message(int p) {
 	printf("                                                         ");
 }
 
+void ignore_message(int p) {
+	display();
+	gotoxy(0, N_ROW + 1);
+	printf("%d(%s) 플레이어가 아이템을 무시합니다...", p, player[p].name);
+	Sleep(1000);
+	gotoxy(0, N_ROW + 1);
+	printf("                                                         ");
+}
+
 void change_message(int p) {
 	display();
 	gotoxy(0, N_ROW + 1);
@@ -756,7 +765,7 @@ void change_item_0(void) {
 void change_item(int p) {
 	ITEM temp[ITEM_MAX];
 	for (int i = -1; i <= 1; i += 2) { // 위 아래
-		if (back_buf[py[p] + i][px[p]] == 'I' && player[0].hasitem == true) {
+		if (back_buf[py[p] + i][px[p]] == 'I' && player[p].hasitem == true) {
 			int g_or_not = randint(CHA,IGN);
 			if (g_or_not == CHA) {
 				for (int j = 0; j < item_cnt; j++) {
@@ -766,14 +775,24 @@ void change_item(int p) {
 						night_item[j] = temp[p];
 						player[p].stamina += player[p].item.stamina_buf;
 						if (player[p].stamina > 100) { player[p].stamina = 100; }
-						change_message(0);
+						change_message(p);
+						int nx, ny;
+						do {
+							nx = px[p] + randint(-1, 1);
+							ny = py[p] + randint(-1, 1);
+						} while (!placable(nx, ny));
+
+						move_record(p, nx, ny);
 					}
 				}
+			}
+			else {
+				ignore_message(p);
 			}
 		}
 	}
 	for (int i = -1; i <= 1; i += 2) { // 좌 우
-		if (back_buf[py[p]][px[p] + i] == 'I' && player[0].hasitem == true) {
+		if (back_buf[py[p]][px[p] + i] == 'I' && player[p].hasitem == true) {
 			int g_or_not = randint(CHA, IGN);
 			if (g_or_not == CHA) {
 				for (int j = 0; j < item_cnt; j++) {
@@ -783,9 +802,19 @@ void change_item(int p) {
 						night_item[j] = temp[p];
 						player[p].stamina += player[p].item.stamina_buf;
 						if (player[p].stamina > 100) { player[p].stamina = 100; }
-						change_message(0);
+						change_message(p);
+						int nx, ny;
+						do {
+							nx = px[p] + randint(-1, 1);
+							ny = py[p] + randint(-1, 1);
+						} while (!placable(nx, ny));
+
+						move_record(p, nx, ny);
 					}
 				}
+			}
+			else {
+				ignore_message(p);
 			}
 		}
 	}
