@@ -136,9 +136,9 @@ void play_juldarigi() {
 			}
 			move_player(p, nx, ny);
 			player_print();
-			if (nu != 0 && nupgi_turns == 1) {
+			/*if (nu != 0 && nupgi_turns == 1) {
 				after_nupgi();
-			}
+			}*/
 		}
 		else if (str < 0) {
 			nx = px[p] - 1;
@@ -148,9 +148,9 @@ void play_juldarigi() {
 			}
 			move_player(p, nx, ny);
 			player_print();
-			if (nu != 0 && nupgi_turns == 1) {
+			/*if (nu != 0 && nupgi_turns == 1) {
 				after_nupgi();
-			}
+			}*/
 		}
 		if (px[p] == N_COL / 2 - 1 && player[p].is_alive) {
 			if (p % 2 == 0) {
@@ -165,6 +165,9 @@ void play_juldarigi() {
 			player[i].is_alive = false;
 			n_alive -= 1;
 			out_p = i;
+		}
+		if (nu != 0 && nupgi_turns == 1) {
+			after_nupgi();
 		}
 	}
 	if (al == 1 || al == 2) {
