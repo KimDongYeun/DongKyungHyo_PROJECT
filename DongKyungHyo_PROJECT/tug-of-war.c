@@ -5,7 +5,7 @@
 #include "canvas.h"
 #include "keyin.h"
 
-char out_player[19] = { ' ' };
+char out_player_jul[19] = { ' ' };
 int survive_p[PLAYER_MAX];
 int out_p = 0;
 int cnt = 0;
@@ -68,7 +68,7 @@ void p_str() { //str 계산
 	str = -lt_str + rt_str;
 }
 
-void move_tail(int player, int nx, int ny) { //플레이어
+void move_player(int player, int nx, int ny) { //플레이어
 	int p = player;  // 이름이 길어서...
 	back_buf[ny][nx] = back_buf[py[p]][px[p]];
 	back_buf[py[p]][px[p]] = '  ';
@@ -125,7 +125,7 @@ void play_juldarigi() {
 			if (nu == 2 && nupgi_turns == 1) {
 				nx = px[p] + 2;
 			}
-			move_tail(p, nx, ny);
+			move_player(p, nx, ny);
 			player_print();
 			if (nu != 0 && nupgi_turns == 1) {
 				after_nupgi();
@@ -137,7 +137,7 @@ void play_juldarigi() {
 			if (nu == 1 && nupgi_turns == 1) {
 				nx = px[p] - 2;
 			}
-			move_tail(p, nx, ny);
+			move_player(p, nx, ny);
 			player_print();
 			if (nu != 0 && nupgi_turns == 1) {
 				after_nupgi();
@@ -152,7 +152,7 @@ void play_juldarigi() {
 			}
 			di = 1, out_p = 1;
 			back_buf[py[p]][px[p]] = ' ';
-			out_player[out_p] = '0' + p;
+			out_player_jul[out_p] = '0' + p;
 			player[i].is_alive = false;
 			n_alive -= 1;
 			out_p = i;

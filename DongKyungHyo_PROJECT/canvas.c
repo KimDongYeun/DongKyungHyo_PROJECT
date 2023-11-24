@@ -68,6 +68,18 @@ bool placable(int col, int row) {
 void display(void) {
 	draw();
 	gotoxy(0, N_ROW + 4);  // 추가로 표시할 정보가 있으면 맵과 상태창 사이의 빈 공간에 출력
+	printf("                                                                                        \n");
+	printf("                                                                                        \n");
+	printf("                                                                                        \n");
+	printf("                                                                                        \n");
+	printf("                                                                                        \n");
+	printf("                                                                                        \n");
+	printf("                                                                                        \n");
+	printf("                                                                                        \n");
+	printf("                                                                                        \n");
+	printf("                                                                                        \n");
+	printf("                                                                                        \n");
+	gotoxy(0, N_ROW + 4);
 	print_status();
 }
 
@@ -87,10 +99,10 @@ void print_status(void) {
 	printf("                     intl      str      stm\n");
 	for (int p = 0; p < n_player; p++) {
 		if (player[p].intel >= 10) { // 좌우정렬
-			printf("player %2d: %5s     %d(%s%d)    %d(%s%d)     %d%%\n", p, player[p].is_alive ? "alive" : "DEAD", player[p].intel, player[p].item.intel_buf >=0 ? "+" : "-", player[p].item.intel_buf, player[p].str, player[p].item.str_buf >= 0 ? "+" : "-", player[p].item.str_buf, player[p].stamina);
+			printf("player %2d: %5s     %d(%s%d)    %d(%s%d)     %d%%\n", p, player[p].is_alive ? "alive" : "DEAD", player[p].intel, player[p].item.intel_buf >= 0 ? "+" : "", player[p].item.intel_buf, player[p].str, player[p].item.str_buf >= 0 ? "+" : "", player[p].item.str_buf, player[p].stamina);
 		}
 		else {
-			printf("player %2d: %5s      %d(%s%d)    %d(%s%d)     %d%%\n", p, player[p].is_alive ? "alive" : "DEAD", player[p].intel, player[p].item.intel_buf >= 0 ? "+" : "-", player[p].item.intel_buf, player[p].str, player[p].item.str_buf >= 0 ? "+" : "-", player[p].item.str_buf, player[p].stamina);
+			printf("player %2d: %5s      %d(%s%d)    %d(%s%d)     %d%%\n", p, player[p].is_alive ? "alive" : "DEAD", player[p].intel, player[p].item.intel_buf >= 0 ? "+" : "", player[p].item.intel_buf, player[p].str, player[p].item.str_buf >= 0 ? "+" : "", player[p].item.str_buf, player[p].stamina);
 		}
 	}
 }
@@ -150,7 +162,78 @@ void ending(void) {
 //dialog 구현 
 char backup[ROW_MAX][COL_MAX];
 
-void dialog_mugunghwa(char message[],char message2[], char out_player[],int size) {
+void dialog_juldarigi(char message[], char message2[], int out_player, int size) {
+	for (int i = 0; i < N_ROW; i++) {
+		for (int j = 0; j < N_COL; j++) {
+			backup[i][j] = back_buf[i][j];
+		}
+	} //전 화면 복사해놓기
+
+	int message_row = N_ROW / 2;
+	//메시지 출력할 곳
+
+	int time = DIALOG_DURATION_SEC;
+
+	while (time >= 0) {
+		if (time > 0) {
+			//메시지 칸 들어갈 곳에 있는 거 다 없애기
+			for (int i = 1; i < 34; i++) {
+				printxy(' ', i, message_row);
+			}
+
+			//메시지 창 출력
+			gotoxy(1, message_row - 1);
+			for (int i = 0; i < 34; i++) {
+				printf("*");
+			} //위쪽 * 출력
+			for (int j = -1; j <= 1; j++) {
+				gotoxy(1, message_row);
+				for (int i = 0; i < 1; i++) {
+					printf("*");
+				}
+			}// 메시지 앞 * 출력
+			for (int j = -1; j <= 1; j++) {
+				gotoxy(34, message_row); //dialog 뒤 * 출력
+				for (int i = 0; i < 1; i++) {
+					printf("*");
+				}
+			}
+
+			gotoxy(3, message_row); //남은 시간 출력
+
+			printf("%d ", time);
+			printf("%s ", message);
+			printf("%d", out_player);
+			printf(" %s", message2);
+
+			gotoxy(1, message_row + 1); //아래쪽 * 출력
+			for (int i = 0; i < 34; i++) {
+				printf("*");
+			}
+
+			Sleep(1000); //1초 대기
+		}
+		else if (time == 0) { //남은 시간이 0일때 메시지창 없애기
+			for (int i = 1; i < 40; i++) {
+				for (int j = -2; j <= 2; j++) {
+					printxy(' ', i, message_row + j);
+				}
+			}
+		}
+		time--;
+	}
+	// 이전 화면을 복구
+	for (int i = 0; i < N_ROW; i++) {
+		for (int j = 0; j < N_COL; j++) {
+			back_buf[i][j] = backup[i][j];
+			printxy(back_buf[i][j], j, i);
+			printxy(' ', N_COL / 2 - 1, N_ROW / 2 - 1);
+			printxy(' ', N_COL / 2 - 1, N_ROW / 2 + 1);
+		}
+	}
+}
+
+void dialog_mugunghwa(char message[], char message2[], char out_player[], int size) {
 	for (int i = 0; i < N_ROW; i++) {
 		for (int j = 0; j < N_COL; j++) {
 			backup[i][j] = back_buf[i][j];
@@ -177,13 +260,13 @@ void dialog_mugunghwa(char message[],char message2[], char out_player[],int size
 				printf("*");
 			} //위쪽 * 출력
 			for (int j = -1; j <= 1; j++) {
-				gotoxy(1, message_row+j);
+				gotoxy(1, message_row + j);
 				for (int i = 0; i < 1; i++) {
 					printf("*");
 				}
 			}// 메시지 앞 * 출력
 			for (int j = -1; j <= 1; j++) {
-				gotoxy(33, message_row+j); //dialog 뒤 * 출력
+				gotoxy(33, message_row + j); //dialog 뒤 * 출력
 				for (int i = 0; i < 1; i++) {
 					printf("*");
 				}
@@ -194,8 +277,8 @@ void dialog_mugunghwa(char message[],char message2[], char out_player[],int size
 			printf("%d ", time);
 			printf("%s ", message);
 
-			for (int i = 0; i < size-1; i++) { 
-				if (i%2==1) {
+			for (int i = 0; i < size - 1; i++) {
+				if (i % 2 == 1) {
 					printf("%c ", out_player[i]);
 				}
 				else {
@@ -217,7 +300,7 @@ void dialog_mugunghwa(char message[],char message2[], char out_player[],int size
 					printxy(' ', i, message_row + j);
 				}
 			}
-			
+
 		}
 		time--;
 	}
