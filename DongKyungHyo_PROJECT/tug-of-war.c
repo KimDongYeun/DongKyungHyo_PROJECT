@@ -16,6 +16,15 @@ int p, al, di, nu = 0;
 int nupgi_turns = 0;
 int bh;
 
+void juldarigi_init();
+void p_str();
+void move_player();
+void move_dash();
+void player_print();
+void dash_print();
+void after_nupgi();
+void play_juldarigi();
+
 void juldarigi_init(void) {
 	map_init(3, 32);
 	for (int i = 0; i < n_player; i++) {
@@ -276,4 +285,5 @@ int juldarigi(void) {
 			break;
 		}
 	}
+	return 0;
 }
