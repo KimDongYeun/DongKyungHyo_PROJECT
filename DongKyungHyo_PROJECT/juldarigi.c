@@ -150,6 +150,7 @@ void countkey() {
 	return 0;
 }
 
+int turn = 1;
 void play_juldarigi() {
 	before_str = str;
 	int nx, ny;
@@ -173,7 +174,6 @@ void play_juldarigi() {
 				nx = px[p] + 2;
 			}
 			move_player(p, nx, ny);
-			player_print();
 		}
 		else if (str < 0) {
 			nx = px[p] - 1;
@@ -182,20 +182,21 @@ void play_juldarigi() {
 				nx = px[p] - 2;
 			}
 			move_player(p, nx, ny);
-			player_print();
 		}
 		if ((p % 2 == 0 && px[p] >= 15) || (p % 2 != 0 && px[p] <= 15)) {
-			if (p % 2 == 0) {
-				al = 1;
+			if (player[p].is_alive) {
+				if (p % 2 == 0) {
+					al = 1;
+				}
+				else if (p % 2 != 0) {
+					al = 2;
+				}
+				di = 1;
+				back_buf[1][15] = ' ';
+				out_player_jul[out_p] = '0' + i;
+				player[i].is_alive = false;
+				n_alive -= 1;
 			}
-			else if (p % 2 != 0) {
-				al = 2;
-			}
-			di = 1;
-			back_buf[1][15] = ' ';
-			out_player_jul[out_p] = '0' + i;
-			player[i].is_alive = false;
-			n_alive -= 1;
 		}
 	}
 	if (al == 1 || al == 2) { //죽었을때 상대편 안움직이게 할 코드
@@ -204,13 +205,11 @@ void play_juldarigi() {
 				nx = px[i] + 1;
 				ny = 1;
 				move_player(i, nx, ny);
-				player_print();
 			}
 			else if (i % 2 != 0 && al == 1) {
 				nx = px[i] - 1;
 				ny = 1;
 				move_player(i, nx, ny);
-				player_print();
 			}
 		}
 		for (int j = 0; j < 3; j++) { //죽었을때 줄 안움직이게 하는 코드
@@ -248,6 +247,7 @@ void play_juldarigi() {
 			dash_print();
 		}
 	}
+	player_print();
 	if (nu != 0 && nupgi_turns == 1) {
 		after_nupgi();
 	}
