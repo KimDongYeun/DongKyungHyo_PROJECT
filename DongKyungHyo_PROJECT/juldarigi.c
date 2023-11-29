@@ -20,7 +20,8 @@ int count = 0;
 int one = 0, two = 0;
 int before_str = 0;
 int dx, dy, nx, ny, d;
-int buhwal;
+int buhwal[10] = { ' ' };
+int notbu;
 
 void juldarigi_init();
 void p_str();
@@ -38,6 +39,7 @@ void juldarigi_init(void) {
 			survive_p[cnt] = i;
 			cnt++;
 			n_alive++;
+			buhwal[notbu] = '0' + i;
 		}
 		else if (player[i].is_alive == false) {
 			player[i].is_alive = true;
@@ -183,6 +185,10 @@ void play_juldarigi() {
 			}
 			move_player(p, nx, ny);
 		}
+		else if (nu == 3) {
+			nx = px[p];
+			ny = py[p];
+		}
 		if ((p % 2 == 0 && px[p] >= 15) || (p % 2 != 0 && px[p] <= 15)) {
 			if (player[p].is_alive) {
 				if (p % 2 == 0) {
@@ -207,6 +213,16 @@ void play_juldarigi() {
 				move_player(i, nx, ny);
 			}
 			else if (i % 2 != 0 && al == 1) {
+				nx = px[i] - 1;
+				ny = 1;
+				move_player(i, nx, ny);
+			}
+			else if (nu == 1 && i % 2 == 0) {
+				nx = px[i] + 1;
+				ny = 1;
+				move_player(i, nx, ny);
+			}
+			else if (nu == 2 && i % 2 != 0) {
 				nx = px[i] - 1;
 				ny = 1;
 				move_player(i, nx, ny);
@@ -285,7 +301,7 @@ int juldarigi(void) {
 				}
 				if (ifff == 1) {
 					gotoxy(0, 4);
-					printf("왼쪽 팀이 눕기를 사용했지만, 스테미너가 부족하여 실패하였습니다.\n");
+					printf("왼쪽 팀이 눕기를 사용했지만, 체력이 부족하여 실패하였습니다.\n");
 					ifff = 0;
 				}
 				nupgi_turns = 1;
@@ -305,7 +321,7 @@ int juldarigi(void) {
 				}
 				if (ifff == 1) {
 					gotoxy(0, 4);
-					printf("왼쪽 팀이 눕기를 사용했지만, 스테미너가 부족하여 실패하였습니다.\n");
+					printf("왼쪽 팀이 눕기를 사용했지만, 체력이 부족하여 실패하였습니다.\n");
 					ifff = 0;
 				}
 				nupgi_turns = 1;
@@ -358,6 +374,10 @@ int juldarigi(void) {
 		}
 
 		if (allEvenDead || allOddDead) {
+			player[notbu].is_alive = true;
+			player[notbu].str = player[notbu].str / 2;
+			player[notbu].intel = player[notbu].intel / 2;
+			player[notbu].hasitem = false;
 			break;
 		}
 	}
