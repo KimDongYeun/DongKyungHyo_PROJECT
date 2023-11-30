@@ -14,7 +14,7 @@ int cnt_t = 0; //생존
 int str = 0; //힘
 int key; //키 입력
 int hx[3], hy[3]; //줄
-int p, al, di, nu = 0;
+int p, diee, di, nu = 0;
 int nupgi_turns = 0; //눕기 턴
 int before_str = 0; //눕기 하기 전에 저장할 힘
 int dx, dy, nx, ny, d; //줄, 플레이어 출력 관련
@@ -192,10 +192,10 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 		if ((p % 2 == 0 && px[p] >= 15) || (p % 2 != 0 && px[p] <= 15)) { //죽어야 하는 경우
 			if (player[p].is_alive) {
 				if (p % 2 == 0) { //오른쪽 애 죽었을때
-					al = 1;
+					diee = 1;
 				}
 				else if (p % 2 != 0) { //왼쪽애 죽었을때
-					al = 2;
+					diee = 2;
 				}
 				di = 1;
 				back_buf[1][15] = ' ';
@@ -206,14 +206,24 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 			}
 		}
 	}
-	if (al == 1 || al == 2) { //죽었을때 상대편 안움직이게 할 코드
+	if (diee == 1 || diee == 2) { //죽었을때 상대편 안움직이게 할 코드
 		for (int i = 0; i < n_player; i++) {
-			if (i % 2 == 0 && al == 2) {
+			if (i % 2 == 0 && diee == 2) {
 				nx = px[i] + 1;
 				ny = 1;
 				move_player(i, nx, ny);
 			}
-			else if (i % 2 != 0 && al == 1) {
+			else if (i % 2 != 0 && diee == 1) {
+				nx = px[i] - 1;
+				ny = 1;
+				move_player(i, nx, ny);
+			}
+			else if (nu == 1 && i % 2 == 0) {
+				nx = px[i] + 1;
+				ny = 1;
+				move_player(i, nx, ny);
+			}
+			else if (nu == 2 && i % 2 != 0) {
 				nx = px[i] - 1;
 				ny = 1;
 				move_player(i, nx, ny);
@@ -234,7 +244,7 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 			move_dash(dx, dy, j);
 			dash_print();
 		}
-		al = 0;
+		diee = 0;
 	}
 	else { //죽은애 없을때 줄 움직이게 하는 코드
 		int moveAmount = (str > 0) ? 1 : -1;
