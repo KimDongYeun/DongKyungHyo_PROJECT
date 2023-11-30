@@ -162,7 +162,7 @@ void ending(void) {
 //dialog 구현 
 char backup[ROW_MAX][COL_MAX];
 
-void dialog_juldarigi(char message[], char message2[], int out_player, int size) {
+void dialog_juldarigi(char message[], char message2[], char out_player_jul[], int size) {
 	for (int i = 0; i < N_ROW; i++) {
 		for (int j = 0; j < N_COL; j++) {
 			backup[i][j] = back_buf[i][j];
@@ -203,7 +203,14 @@ void dialog_juldarigi(char message[], char message2[], int out_player, int size)
 
 			printf("%d ", time);
 			printf("%s ", message);
-			printf("%d", out_player);
+			for (int i = 0; i < size; i++) {
+				if (i % 2 == 1) {
+					printf("%c ", out_player_jul[i]);
+				}
+				else {
+					printf("%c ", out_player_jul[i]);
+				}
+			}
 			printf(" %s", message2);
 
 			gotoxy(1, message_row + 1); //아래쪽 * 출력
