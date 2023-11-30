@@ -7,21 +7,20 @@
 #include "canvas.h"
 #include "keyin.h"
 
-char out_player_jul[19] = { ' ' };
+char out_player_jul[19] = { ' ' }; //죽은애 저장할거
 int survive_p[PLAYER_MAX];
-int out_p = 0;
-int cnt = 0;
-int str = 0;
-int key;
-int hx[3], hy[3];
+int out_p = 0; //죽은애
+int cnt_t = 0; //생존
+int str = 0; //힘
+int key; //키 입력
+int hx[3], hy[3]; //줄
 int p, al, di, nu = 0;
-int nupgi_turns = 0;
-int count = 0;
-int one = 0, two = 0;
-int before_str = 0;
-int dx, dy, nx, ny, d;
-int buhwal[10] = { ' ' };
-int notbu;
+int nupgi_turns = 0; //눕기 턴
+int before_str = 0; //눕기 하기 전에 저장할 힘
+int dx, dy, nx, ny, d; //줄, 플레이어 출력 관련
+int buhwal[10] = { ' ' }; //기존에 계속 생존해 있던 플레이어 저장할거
+int notbu; //얘도
+int num_dead_player = 0;
 
 void juldarigi_init();
 void p_str();
@@ -32,20 +31,19 @@ void dash_print();
 void after_nupgi();
 void play_juldarigi();
 
-void juldarigi_init(void) {
+void juldarigi_init(void) { //맵크기 설정, 죽은애 부활, 플레이어 위치 설정, 줄 위치 설정
 	map_init(3, 32);
 	for (int i = 0; i < n_player; i++) {
 		if (player[i].is_alive == true) {
-			survive_p[cnt] = i;
-			cnt++;
-			n_alive++;
-			buhwal[notbu] = '0' + i;
+			survive_p[cnt_t] = i;
+			cnt_t++;
+			buhwal[notbu] = i;
 		}
 		else if (player[i].is_alive == false) {
 			player[i].is_alive = true;
 			player[i].hasitem = false;
-			survive_p[cnt] = i;
-			cnt++;
+			survive_p[cnt_t] = i;
+			cnt_t++;
 			n_alive++;
 		}
 	}
@@ -114,8 +112,8 @@ void dash_print() { //줄 출력
 	}
 }
 
-void after_nupgi() {
-	for (int i = 0; i < N_COL; i++) {
+void after_nupgi() { //눕기 한 후 초기화시키기
+	for (int i = 0; i < COL_MAX; i++) {
 		printxy(' ', i, 4);
 	}
 	for (int i = 0; i < n_player; i++) {
@@ -130,21 +128,31 @@ void after_nupgi() {
 	nupgi_turns = 0;
 }
 
-void countkey() {
+int keytrue = 0;
+void countkey() { // 연타 코드
 	while (1) {
 		if (_kbhit()) {
 			char key = _getch();
 
 			if (key == 'z') {
-				count++;
-				one = 1;
+				str -= 1;
+				for (int i = 0; i < N_COL; i++) {
+					printxy(' ', i, 5);
+				}
+				gotoxy(0, 5);
+				printf("str :	%d\n", str);
 			}
 			else if (key == '/') {
-				count++;
-				two = 1;
+				str += 1;
+				for (int i = 0; i < N_COL; i++) {
+					printxy(' ', i, 5);
+				}
+				gotoxy(0, 5);
+				printf("str :	%d\n", str);
 			}
+			keytrue = 1;
 		}
-		Sleep(500);
+		Sleep(400);
 		if (!_kbhit()) {
 			break;
 		}
@@ -153,21 +161,13 @@ void countkey() {
 }
 
 int turn = 1;
-void play_juldarigi() {
+void play_juldarigi() { //게임돌아가는 진짜 코드
 	before_str = str;
 	int nx, ny;
-	countkey();
-	p_str();
-	if (one == 1 || two == 1) {
-		if (one == 1) {
-			str -= count;
-		}
-		else if (two == 1) {
-			str += count;
-		}
-	}
-	Sleep(1000);
-	for (int i = 0; i < n_player; i++) {
+	p_str(); //str계산하기
+	countkey(); //만약 연타할거면
+	Sleep(1000); //1초 대기
+	for (int i = 0; i < n_player; i++) { //플레이어 움직이게하기, nu, nupgi_turns은 눕기 했을때 2칸 움직이기
 		p = i;
 		if (str > 0) {
 			nx = px[p] + 1;
@@ -189,18 +189,19 @@ void play_juldarigi() {
 			nx = px[p];
 			ny = py[p];
 		}
-		if ((p % 2 == 0 && px[p] >= 15) || (p % 2 != 0 && px[p] <= 15)) {
+		if ((p % 2 == 0 && px[p] >= 15) || (p % 2 != 0 && px[p] <= 15)) { //죽어야 하는 경우
 			if (player[p].is_alive) {
-				if (p % 2 == 0) {
+				if (p % 2 == 0) { //오른쪽 애 죽었을때
 					al = 1;
 				}
-				else if (p % 2 != 0) {
+				else if (p % 2 != 0) { //왼쪽애 죽었을때
 					al = 2;
 				}
 				di = 1;
 				back_buf[1][15] = ' ';
-				out_player_jul[out_p] = '0' + i;
+				out_player_jul[out_p + num_dead_player] = '0' + i;
 				player[i].is_alive = false;
+				num_dead_player++;
 				n_alive -= 1;
 			}
 		}
@@ -213,16 +214,6 @@ void play_juldarigi() {
 				move_player(i, nx, ny);
 			}
 			else if (i % 2 != 0 && al == 1) {
-				nx = px[i] - 1;
-				ny = 1;
-				move_player(i, nx, ny);
-			}
-			else if (nu == 1 && i % 2 == 0) {
-				nx = px[i] + 1;
-				ny = 1;
-				move_player(i, nx, ny);
-			}
-			else if (nu == 2 && i % 2 != 0) {
 				nx = px[i] - 1;
 				ny = 1;
 				move_player(i, nx, ny);
@@ -264,12 +255,13 @@ void play_juldarigi() {
 		}
 	}
 	player_print();
-	if (nu != 0 && nupgi_turns == 1) {
+	if (nu != 0 && nupgi_turns == 1) { //눕기 턴 초기화
 		after_nupgi();
 	}
-	count = 0;
 }
 
+int x_pressed = 0;
+int dot_pressed = 0;
 int juldarigi(void) {
 	juldarigi_init();
 	system("cls");
@@ -288,54 +280,73 @@ int juldarigi(void) {
 			else if (key == 'x') {
 				int ifff = 0;
 				nu = 1;
-				gotoxy(0, 4);
-				printf("왼쪽 팀이 눕기를 사용했습니다.\n");
-				for (int i = 0; i < n_player; i++) {
-					if (i % 2 == 0 && player[i].stamina > 0) {
-						player[i].str *= 2;
-						player[i].stamina *= 0.7;
-					}
-					else if (i % 2 == 0 && player[i].stamina < 0) {
-						ifff = 1;
+				if (_kbhit()) {
+					key = _getch();
+					if (key == '.') {
+						for (int i = 0; i < n_player; i++) {
+							player[i].str *= 2;
+							player[i].stamina *= 0.7;
+						}
+						gotoxy(0, 4);
+						printf("양쪽팀이 함께 눕기를 사용했습니다.\n");
 					}
 				}
-				if (ifff == 1) {
+				else {
 					gotoxy(0, 4);
-					printf("왼쪽 팀이 눕기를 사용했지만, 체력이 부족하여 실패하였습니다.\n");
-					ifff = 0;
+					printf("왼쪽 팀이 눕기를 사용했습니다.\n");
+					for (int i = 0; i < n_player; i++) {
+						if (i % 2 == 0 && player[i].stamina > 0) {
+							player[i].str *= 2;
+							player[i].stamina *= 0.7;
+						}
+						else if (i % 2 == 0 && player[i].stamina < 0) {
+							ifff = 1;
+						}
+					}
+					if (ifff == 1) {
+						gotoxy(0, 4);
+						printf("왼쪽팀 체력 부족으로 눕기 실패.\n");
+						ifff = 0;
+						nu = 0;
+					}
 				}
 				nupgi_turns = 1;
+				x_pressed = 1;
 			}
 			else if (key == '.') {
 				int ifff = 0;
-				gotoxy(0, 4);
-				printf("오른쪽 팀이 눕기를 사용했습니다.\n");
-				for (int i = 1; i < n_player; i++) {
-					if (i % 2 != 0 && player[i].stamina > 0) {
-						player[i].str *= 2;
-						player[i].stamina *= 0.7;
-					}
-					else if (i % 2 != 0 && player[i].stamina < 0) {
-						ifff = 1;
+				nu = 2;
+				if (_kbhit()) {
+					key = _getch();
+					if (key == 'x') {
+						for (int i = 0; i < n_player; i++) {
+							player[i].str *= 2;
+							player[i].stamina *= 0.7;
+						}
+						gotoxy(0, 4);
+						printf("양쪽팀이 함께 눕기를 사용했습니다.\n");
 					}
 				}
-				if (ifff == 1) {
+				else {
 					gotoxy(0, 4);
-					printf("왼쪽 팀이 눕기를 사용했지만, 체력이 부족하여 실패하였습니다.\n");
-					ifff = 0;
+					printf("오른쪽 팀이 눕기를 사용했습니다.\n");
+					for (int i = 1; i < n_player; i++) {
+						if (i % 2 != 0 && player[i].stamina > 0) {
+							player[i].str *= 2;
+							player[i].stamina *= 0.7;
+						}
+						else if (i % 2 != 0 && player[i].stamina < 0) {
+							ifff = 1;
+						}
+					}
+					if (ifff == 1) {
+						gotoxy(0, 4);
+						printf("오른쪽팀 체력 부족으로 눕기 실패.\n");
+						ifff = 0;
+						nu = 0;
+					}
 				}
 				nupgi_turns = 1;
-				nu = 2;
-			}
-			else if (key == 'x' && '.') {
-				gotoxy(0, 4);
-				printf("왼쪽과 오른쪽 팀 둘다 눕기를 사용했습니다.\n");
-				for (int i = 0; i < n_player; i++) {
-					player[i].str *= 2;
-					player[i].stamina *= 0.7;
-					nupgi_turns = 1;
-				}
-				nu = 3;
 			}
 		}
 		display();
@@ -353,13 +364,23 @@ int juldarigi(void) {
 		printf("str :	%d\n", str);
 		Sleep(1000);
 		if (di == 1) {
-			dialog_juldarigi("player", "dead!", out_player_jul, out_p);
+			if (num_dead_player == 1) {
+				dialog_juldarigi("player", "dead!", out_player_jul, 1);
+			}
+			else if (num_dead_player >= 2) {
+				dialog_juldarigi("player", "dead!", out_player_jul, num_dead_player);
+			}
 			di = 0;
+			num_dead_player = 0;
 		}
-		if (one == 1 || two == 1) {
+		if (keytrue == 1) {
 			str = before_str;
-			one = 0;
-			two = 0;
+			for (int i = 0; i < N_COL; i++) {
+				printxy(' ', i, 5);
+			}
+			gotoxy(0, 5);
+			printf("str :	%d\n", str);
+			keytrue = 0;
 		}
 		int allEvenDead = 1; // 짝수 애들 죽었는지 확인할 코드
 		int allOddDead = 1;  //홀수 애들 
@@ -373,11 +394,15 @@ int juldarigi(void) {
 			}
 		}
 
-		if (allEvenDead || allOddDead) {
-			player[notbu].is_alive = true;
-			player[notbu].str = player[notbu].str / 2;
-			player[notbu].intel = player[notbu].intel / 2;
-			player[notbu].hasitem = false;
+		if (allEvenDead || allOddDead) { //처음에 살았었던 애 죽은거 다시 살리고, 아이템 없애고 힘,지능 절반 하락 후 줄다리기 종료
+			for (int i = 0; i < n_player; i++) {
+				if (i == buhwal[notbu]) {
+					player[i].is_alive = true;
+					player[i].str = player[i].str / 2;
+					player[i].intel = player[i].intel / 2;
+					player[i].hasitem = false;
+				}
+			}
 			break;
 		}
 	}
