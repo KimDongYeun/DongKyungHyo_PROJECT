@@ -11,12 +11,12 @@ char out_player_jul[19] = { ' ' }; //죽은애 저장할거
 int survive_p[PLAYER_MAX];
 int out_p = 0; //죽은애
 int cnt_t = 0; //생존
-int str = 0; //힘
+double str = 0.0; //힘
 int key; //키 입력
 int hx[3], hy[3]; //줄
 int p, diee, di, nu = 0;
 int nupgi_turns = 0; //눕기 턴
-int before_str = 0; //눕기 하기 전에 저장할 힘
+double before_str = 0; //눕기 하기 전에 저장할 힘
 int dx, dy, nx, ny, d; //줄, 플레이어 출력 관련
 int buhwal[10] = { ' ' }; //기존에 계속 생존해 있던 플레이어 저장할거
 int notbu; //얘도
@@ -71,7 +71,7 @@ void juldarigi_init(void) { //맵크기 설정, 죽은애 부활, 플레이어 위치 설정, 줄 �
 }
 
 void p_str() { //str 계산
-	int lt_str = 0, rt_str = 0;
+	double lt_str = 0, rt_str = 0;
 	for (int i = 0; i < n_player; i++) {
 		if (i % 2 == 0 && player[i].is_alive) {
 			lt_str += player[i].str;
@@ -140,7 +140,7 @@ void countkey() { // 연타 코드
 					printxy(' ', i, 5);
 				}
 				gotoxy(0, 5);
-				printf("str :	%d\n", str);
+				printf("str :	%.lf\n", str);
 			}
 			else if (key == '/') {
 				str += 1;
@@ -148,7 +148,7 @@ void countkey() { // 연타 코드
 					printxy(' ', i, 5);
 				}
 				gotoxy(0, 5);
-				printf("str :	%d\n", str);
+				printf("str :	%.lf\n", str);
 			}
 			keytrue = 1;
 		}
@@ -171,7 +171,7 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 		printxy(' ', i, 5);
 	}
 	gotoxy(0, 5);
-	printf("str :	%d\n", str);
+	printf("str :	%.lf\n", str);
 	countkey(); //만약 연타할거면
 	Sleep(1000); //1초 대기
 	for (int i = 0; i < n_player; i++) { //플레이어 움직이게하기, nu, nupgi_turns은 눕기 했을때 2칸 움직이기
@@ -255,7 +255,7 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 						move_player(i, nx, ny);
 					}
 				}
-				else if (nup2_die == 2 ) {
+				else if (nup2_die == 2 || nup2_die == 3) {
 					if (i % 2 == 0) {
 						nx = px[i] + 1;
 						ny = 1;
@@ -279,6 +279,7 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 					dash_print();
 				}
 			}
+			//nup_die = 0;
 		}
 		else if (nup2_die != 0 && nu != 0) {
 			for (int i = 0; i < 3; i++) {
@@ -316,6 +317,7 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 				move_dash(dx, dy, j);
 				dash_print();
 			}
+			diee = 0;
 		}
 	}
 	else { //죽은애 없을때 줄 움직이게 하는 코드
@@ -339,7 +341,6 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 	player_print();
 	nup_die = 0;
 	nup2_die = 0;
-	diee = 0;
 	if (nu != 0 && nupgi_turns == 1) { //눕기 턴 초기화
 		after_nupgi();
 	}
@@ -356,7 +357,7 @@ int juldarigi(void) {
 	gotoxy(N_COL / 2 - 1, 2);
 	printf(" ");
 	gotoxy(0, 5);
-	printf("str :	%d", str);
+	printf("str :	%.lf", str);
 	printf("\n");
 	while (1) {
 		if (_kbhit()) {
@@ -439,14 +440,14 @@ int juldarigi(void) {
 			printxy(' ', i, 5);
 		}
 		gotoxy(0, 5);
-		printf("str :	%d\n", str);
+		printf("str :	%.lf\n", str);
 		play_juldarigi();
 		display();
 		for (int i = 0; i < N_COL; i++) {
 			printxy(' ', i, 5);
 		}
 		gotoxy(0, 5);
-		printf("str :	%d\n", str);
+		printf("str :	%.lf\n", str);
 		Sleep(1000);
 		if (di == 1) {
 			if (num_dead_player == 1) {
@@ -465,7 +466,7 @@ int juldarigi(void) {
 				printxy(' ', i, 5);
 			}
 			gotoxy(0, 5);
-			printf("str :	%d\n", str);
+			printf("str :	%.lf\n", str);
 			keytrue = 0;
 		}
 		int allEvenDead = 1; // 짝수 애들 죽었는지 확인할 코드
