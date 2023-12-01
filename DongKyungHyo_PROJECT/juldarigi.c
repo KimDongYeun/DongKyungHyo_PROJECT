@@ -161,10 +161,17 @@ void countkey() { // 연타 코드
 }
 
 int turn = 1;
+int nup_die = 0;
+int nup2_die = 0;
 void play_juldarigi() { //게임돌아가는 진짜 코드
 	before_str = str;
 	int nx, ny;
 	p_str(); //str계산하기
+	for (int i = 0; i < N_COL; i++) {
+		printxy(' ', i, 5);
+	}
+	gotoxy(0, 5);
+	printf("str :	%d\n", str);
 	countkey(); //만약 연타할거면
 	Sleep(1000); //1초 대기
 	for (int i = 0; i < n_player; i++) { //플레이어 움직이게하기, nu, nupgi_turns은 눕기 했을때 2칸 움직이기
@@ -185,10 +192,6 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 			}
 			move_player(p, nx, ny);
 		}
-		else if (nu == 3) {
-			nx = px[p];
-			ny = py[p];
-		}
 		if ((p % 2 == 0 && px[p] >= 15) || (p % 2 != 0 && px[p] <= 15)) { //죽어야 하는 경우
 			if (player[p].is_alive) {
 				if (p % 2 == 0) { //오른쪽 애 죽었을때
@@ -200,9 +203,15 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 				di = 1;
 				back_buf[1][15] = ' ';
 				out_player_jul[out_p + num_dead_player] = '0' + i;
-				player[i].is_alive = false;
+				player[p].is_alive = false;
 				num_dead_player++;
 				n_alive -= 1;
+				if (p % 2 == 0 && nu != 0) {
+					nup_die += 1;
+				}
+				else if (p % 2 != 0 && nu != 0) {
+					nup2_die += 1;
+				}
 			}
 		}
 	}
@@ -218,33 +227,96 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 				ny = 1;
 				move_player(i, nx, ny);
 			}
-			else if (nu == 1 && i % 2 == 0) {
-				nx = px[i] + 1;
-				ny = 1;
-				move_player(i, nx, ny);
-			}
-			else if (nu == 2 && i % 2 != 0) {
-				nx = px[i] - 1;
-				ny = 1;
-				move_player(i, nx, ny);
-			}
 		}
-		for (int j = 0; j < 3; j++) { //죽었을때 줄 안움직이게 하는 코드
-			d = j;
-			dx = hx[j];
-			dy = hy[j];
-			if (nu != 0 && nupgi_turns == 1) {
-				if (str > 0) {
-					dx += 1;
+		if (nup_die != 0 && nu != 0) { //눕기 눌러서 누구 죽었을때 상대방 안움직이게 하기 .눌렀을때
+			for (int i = 0; i < n_player; i++) {
+				if (nup_die == 1) {
+					if (i % 2 != 0) {
+						nx = px[i];
+						ny = 1;
+						move_player(i, nx, ny);
+					}
 				}
-				else if (str < 0) {
-					dx -= 1;
+				else if (nup_die == 2) {
+					if (i % 2 != 0) {
+						nx = px[i] - 1;
+						ny = 1;
+						move_player(i, nx, ny);
+					}
 				}
 			}
-			move_dash(dx, dy, j);
-			dash_print();
 		}
-		diee = 0;
+		else if (nup2_die != 0 && nu != 0) {//눕기 눌러서 누구 죽었을때 상대방 안움직이게 하기 x눌렀을때
+			for (int i = 0; i < n_player; i++) {
+				if (nup2_die == 1) {
+					if (i % 2 == 0) {
+						nx = px[i];
+						ny = 1;
+						move_player(i, nx, ny);
+					}
+				}
+				else if (nup2_die == 2 ) {
+					if (i % 2 == 0) {
+						nx = px[i] + 1;
+						ny = 1;
+						move_player(i, nx, ny);
+					}
+				}
+			}
+		}
+		if (nup_die != 0 && nu != 0) {
+			for (int i = 0; i < 3; i++) {
+				if (nup_die == 1) {
+					dx = 15 + i;
+					dy = 1;
+					move_dash(dx, dy, i);
+					dash_print();
+				}
+				else if (nup_die == 2) {
+					dx = 15 + i;
+					dy = 1;
+					move_dash(dx, dy, i);
+					dash_print();
+				}
+			}
+		}
+		else if (nup2_die != 0 && nu != 0) {
+			for (int i = 0; i < 3; i++) {
+				if (nup2_die == 1) {
+					dx = 13 + i;
+					dy = 1;
+					move_dash(dx, dy, i);
+					dash_print();
+				}
+				else if (nup2_die == 2) {
+					dx = 13 + i;
+					dy = 1;
+					move_dash(dx, dy, i);
+					dash_print();
+				}
+			}
+		}
+		else {
+			for (int j = 0; j < 3; j++) { //죽었을때 줄 안움직이게 하는 코드
+				d = j;
+				if (nu != 0 && nupgi_turns == 1) {
+					if (nu == 1) {
+						dx = hx[j] - 2;
+						dy = 1;
+					}
+					else if (nu == 2) {
+						dx = hx[j] + 2;
+						dy = 1;
+					}
+				}
+				else {
+					dx = hx[j];
+					dy = 1;
+				}
+				move_dash(dx, dy, j);
+				dash_print();
+			}
+		}
 	}
 	else { //죽은애 없을때 줄 움직이게 하는 코드
 		int moveAmount = (str > 0) ? 1 : -1;
@@ -261,10 +333,13 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 				}
 			}
 			move_dash(dx, dy, j);
-			dash_print();
 		}
 	}
+	dash_print();
 	player_print();
+	nup_die = 0;
+	nup2_die = 0;
+	diee = 0;
 	if (nu != 0 && nupgi_turns == 1) { //눕기 턴 초기화
 		after_nupgi();
 	}
@@ -382,6 +457,7 @@ int juldarigi(void) {
 			}
 			di = 0;
 			num_dead_player = 0;
+			Sleep(200);
 		}
 		if (keytrue == 1) {
 			str = before_str;
