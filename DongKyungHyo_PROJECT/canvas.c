@@ -172,7 +172,85 @@ void ending(void) {
 //dialog 구현 
 char backup[ROW_MAX][COL_MAX];
 
-void dialog_mugunghwa(char message[],char message2[], char out_player[],int size) {
+void dialog_juldarigi(char message[], char message2[], char out_player_jul[], int size) {
+	for (int i = 0; i < N_ROW; i++) {
+		for (int j = 0; j < N_COL; j++) {
+			backup[i][j] = back_buf[i][j];
+		}
+	} //전 화면 복사해놓기
+
+	int message_row = N_ROW / 2;
+	//메시지 출력할 곳
+
+	int time = DIALOG_DURATION_SEC;
+
+	while (time >= 0) {
+		if (time > 0) {
+			//메시지 칸 들어갈 곳에 있는 거 다 없애기
+			for (int i = 1; i < 34; i++) {
+				printxy(' ', i, message_row);
+			}
+
+			//메시지 창 출력
+			gotoxy(1, message_row - 1);
+			for (int i = 0; i < 34; i++) {
+				printf("*");
+			} //위쪽 * 출력
+			for (int j = -1; j <= 1; j++) {
+				gotoxy(1, message_row);
+				for (int i = 0; i < 1; i++) {
+					printf("*");
+				}
+			}// 메시지 앞 * 출력
+			for (int j = -1; j <= 1; j++) {
+				gotoxy(34, message_row); //dialog 뒤 * 출력
+				for (int i = 0; i < 1; i++) {
+					printf("*");
+				}
+			}
+
+			gotoxy(3, message_row); //남은 시간 출력
+
+			printf("%d ", time);
+			printf("%s ", message);
+			for (int i = 0; i < size; i++) {
+				if (i % 2 == 1) {
+					printf("%c ", out_player_jul[i]);
+				}
+				else {
+					printf("%c ", out_player_jul[i]);
+				}
+			}
+			printf(" %s", message2);
+
+			gotoxy(1, message_row + 1); //아래쪽 * 출력
+			for (int i = 0; i < 34; i++) {
+				printf("*");
+			}
+
+			Sleep(1000); //1초 대기
+		}
+		else if (time == 0) { //남은 시간이 0일때 메시지창 없애기
+			for (int i = 1; i < 40; i++) {
+				for (int j = -2; j <= 2; j++) {
+					printxy(' ', i, message_row + j);
+				}
+			}
+		}
+		time--;
+	}
+	// 이전 화면을 복구
+	for (int i = 0; i < N_ROW; i++) {
+		for (int j = 0; j < N_COL; j++) {
+			back_buf[i][j] = backup[i][j];
+			printxy(back_buf[i][j], j, i);
+			printxy(' ', N_COL / 2 - 1, N_ROW / 2 - 1);
+			printxy(' ', N_COL / 2 - 1, N_ROW / 2 + 1);
+		}
+	}
+}
+
+void dialog_mugunghwa(char message[], char message2[], char out_player[], int size) {
 	for (int i = 0; i < N_ROW; i++) {
 		for (int j = 0; j < N_COL; j++) {
 			backup[i][j] = back_buf[i][j];
@@ -199,13 +277,13 @@ void dialog_mugunghwa(char message[],char message2[], char out_player[],int size
 				printf("*");
 			} //위쪽 * 출력
 			for (int j = -1; j <= 1; j++) {
-				gotoxy(1, message_row+j);
+				gotoxy(1, message_row + j);
 				for (int i = 0; i < 1; i++) {
 					printf("*");
 				}
 			}// 메시지 앞 * 출력
 			for (int j = -1; j <= 1; j++) {
-				gotoxy(33, message_row+j); //dialog 뒤 * 출력
+				gotoxy(33, message_row + j); //dialog 뒤 * 출력
 				for (int i = 0; i < 1; i++) {
 					printf("*");
 				}
@@ -216,8 +294,8 @@ void dialog_mugunghwa(char message[],char message2[], char out_player[],int size
 			printf("%d ", time);
 			printf("%s ", message);
 
-			for (int i = 0; i < size-1; i++) { 
-				if (i%2==1) {
+			for (int i = 0; i < size - 1; i++) {
+				if (i % 2 == 1) {
 					printf("%c ", out_player[i]);
 				}
 				else {
@@ -239,7 +317,7 @@ void dialog_mugunghwa(char message[],char message2[], char out_player[],int size
 					printxy(' ', i, message_row + j);
 				}
 			}
-			
+
 		}
 		time--;
 	}

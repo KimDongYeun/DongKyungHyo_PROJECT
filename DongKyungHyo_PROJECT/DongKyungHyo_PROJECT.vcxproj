@@ -136,6 +136,7 @@
     <ClCompile Include="sample.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="juldarigi.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="canvas.h" />
