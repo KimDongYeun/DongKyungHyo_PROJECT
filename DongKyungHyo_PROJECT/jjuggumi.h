@@ -33,7 +33,7 @@ int px[PLAYER_MAX], py[PLAYER_MAX], period[PLAYER_MAX],ix[ITEM_MAX],iy[ITEM_MAX]
 //void sample(void);
 void mugunghwa(void);
 void nightgame(void);
-//void juldarigi(void);
+int juldarigi(void);
 void jebi(void);
 
 int randint(int low, int high);

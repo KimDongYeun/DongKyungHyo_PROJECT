@@ -86,6 +86,7 @@ int main(void) {
 	intro();
 	mugunghwa();
 	nightgame();
+	juldarigi();
 	jebi();
 	ending();
 	return 0;

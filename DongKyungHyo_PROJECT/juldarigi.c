@@ -157,7 +157,7 @@ void countkey() { // 연타 코드
 			break;
 		}
 	}
-	return 0;
+	return;
 }
 
 int turn = 1;
