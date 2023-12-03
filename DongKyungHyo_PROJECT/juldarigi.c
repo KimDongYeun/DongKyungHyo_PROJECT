@@ -21,6 +21,7 @@ int dx, dy, nx, ny, d; //줄, 플레이어 출력 관련
 int buhwal[19] = { 0 }; //기존에 계속 생존해 있던 플레이어 저장할거
 int notbu = 0; //얘도
 int num_dead_player = 0;
+int rt_alive = 0; lt_alive = 0;
 
 void juldarigi_init();
 void p_str();
@@ -47,6 +48,9 @@ void juldarigi_init(void) { //맵크기 설정, 죽은애 부활, 플레이어 위치 설정, 줄 �
 			n_alive++;
 		}
 	}
+	int na = n_player / 2;
+	rt_alive = na;
+	lt_alive = na;
 	int ma = 2, pl = 2;
 	for (int i = 0; i < n_player; i++) {
 		py[i] = N_ROW / 2;
@@ -208,9 +212,12 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 				n_alive -= 1;
 				if (p % 2 == 0 && nu != 0) {
 					nup_die += 1;
+					lt_alive -= 1;
+
 				}
 				else if (p % 2 != 0 && nu != 0) {
 					nup2_die += 1;
+					rt_alive -= 1;
 				}
 			}
 		}
@@ -230,38 +237,52 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 		}
 		if (nup_die != 0 && nu != 0) { //눕기 눌러서 누구 죽었을때 상대방 안움직이게 하기 .눌렀을때
 			for (int i = 0; i < n_player; i++) {
-				if (nup_die == 1) {
+				if (nup_die == 1 && lt_alive >= 2) {
 					if (i % 2 != 0) {
 						nx = px[i];
 						ny = 1;
 						move_player(i, nx, ny);
 					}
 				}
-				else if (nup_die == 2) {
+				else if ((nup_die == 1 && lt_alive == 0) || nup_die == 2) {
 					if (i % 2 != 0) {
 						nx = px[i] - 1;
 						ny = 1;
 						move_player(i, nx, ny);
 					}
 				}
+				/*else if (nup_die == 2) {
+					if (i % 2 != 0) {
+						nx = px[i] - 1;
+						ny = 1;
+						move_player(i, nx, ny);
+					}
+				}*/
 			}
 		}
 		else if (nup2_die != 0 && nu != 0) {//눕기 눌러서 누구 죽었을때 상대방 안움직이게 하기 x눌렀을때
 			for (int i = 0; i < n_player; i++) {
-				if (nup2_die == 1) {
+				if (nup2_die == 1 && rt_alive >= 2) {
 					if (i % 2 == 0) {
 						nx = px[i];
 						ny = 1;
 						move_player(i, nx, ny);
 					}
 				}
-				else if (nup2_die == 2) {
+				else if ((nup2_die == 1 && rt_alive == 0) || nup2_die == 2) {
 					if (i % 2 == 0) {
 						nx = px[i] + 1;
 						ny = 1;
 						move_player(i, nx, ny);
 					}
 				}
+				/*else if (nup2_die == 2) {
+					if (i % 2 == 0) {
+						nx = px[i] + 1;
+						ny = 1;
+						move_player(i, nx, ny);
+					}
+				}*/
 			}
 		}
 		if (nup_die != 0 && nu != 0) {
@@ -279,7 +300,7 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 					dash_print();
 				}
 			}
-			//nup_die = 0;
+			nup_die = 0;
 		}
 		else if (nup2_die != 0 && nu != 0) {
 			for (int i = 0; i < 3; i++) {
