@@ -11,7 +11,7 @@ char out_player_jul[19] = { ' ' }; //죽은애 저장할거
 int survive_p[PLAYER_MAX];
 int out_p = 0; //죽은애
 int cnt_t = 0; //생존
-double str = 0.0; //힘
+double str = 0; //힘
 int key; //키 입력
 int hx[3], hy[3]; //줄
 int p, diee, di, nu = 0;
@@ -144,7 +144,7 @@ void countkey() { // 연타 코드
 					printxy(' ', i, 5);
 				}
 				gotoxy(0, 5);
-				printf("str :	%.lf\n", str);
+				printf("str :	%.2f\n", str);
 			}
 			else if (key == '/') {
 				str += 1;
@@ -152,7 +152,7 @@ void countkey() { // 연타 코드
 					printxy(' ', i, 5);
 				}
 				gotoxy(0, 5);
-				printf("str :	%.lf\n", str);
+				printf("str :	%.2f\n", str);
 			}
 			keytrue = 1;
 		}
@@ -175,7 +175,7 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 		printxy(' ', i, 5);
 	}
 	gotoxy(0, 5);
-	printf("str :	%.lf\n", str);
+	printf("str :	%.2f\n", str);
 	countkey(); //만약 연타할거면
 	Sleep(1000); //1초 대기
 	for (int i = 0; i < n_player; i++) { //플레이어 움직이게하기, nu, nupgi_turns은 눕기 했을때 2칸 움직이기
@@ -369,7 +369,7 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 			printxy(' ', i, 5);
 		}
 		gotoxy(0, 5);
-		printf("str :	%.lf\n", str);
+		printf("str :	%.2f\n", str);
 	}
 }
 
@@ -384,7 +384,7 @@ int juldarigi(void) {
 	gotoxy(N_COL / 2 - 1, 2);
 	printf(" ");
 	gotoxy(0, 5);
-	printf("str :	%.lf", str);
+	printf("str :	%.2f", str);
 	printf("\n");
 	while (1) {
 		Sleep(500);
@@ -468,14 +468,14 @@ int juldarigi(void) {
 			printxy(' ', i, 5);
 		}
 		gotoxy(0, 5);
-		printf("str :	%.lf\n", str);
+		printf("str :	%.2f\n", str);
 		play_juldarigi();
 		display();
 		for (int i = 0; i < N_COL; i++) {
 			printxy(' ', i, 5);
 		}
 		gotoxy(0, 5);
-		printf("str :	%.lf\n", str);
+		printf("str :	%.2f\n", str);
 		Sleep(500);
 		if (di == 1) {
 			if (num_dead_player == 1) {
@@ -494,7 +494,7 @@ int juldarigi(void) {
 				printxy(' ', i, 5);
 			}
 			gotoxy(0, 5);
-			printf("str :	%.lf\n", str);
+			printf("str :	%.2f\n", str);
 			keytrue = 0;
 		}
 		int allEvenDead = 1; // 짝수 애들 죽었는지 확인할 코드
