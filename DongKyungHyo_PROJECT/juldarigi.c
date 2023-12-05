@@ -3,6 +3,7 @@
 #include <time.h>
 #include <conio.h>
 #include <windows.h>
+#include <stdlib.h>
 #include "jjuggumi.h"
 #include "canvas.h"
 #include "keyin.h"
@@ -18,8 +19,8 @@ int p, diee, di, nu = 0;
 int nupgi_turns = 0; //눕기 턴
 double before_str = 0; //눕기 하기 전에 저장할 힘
 int dx, dy, nx, ny, d; //줄, 플레이어 출력 관련
-int buhwal[19] = { 0 }; //기존에 계속 생존해 있던 플레이어 저장할거
-int notbu = 0; //얘도
+int not_buhwal[19] = { 0 }; //기존에 계속 생존해 있던 플레이어 저장할거
+int buhwal[19] = { -1 };
 int num_dead_player = 0;
 int rt_alive = 0; lt_alive = 0;
 
@@ -38,11 +39,12 @@ void juldarigi_init(void) { //맵크기 설정, 죽은애 부활, 플레이어 위치 설정, 줄 �
 		if (player[i].is_alive == true) {
 			survive_p[cnt_t] = i;
 			cnt_t++;
-			buhwal[i] = i;
+			not_buhwal[i] = i;
 		}
 		else if (player[i].is_alive == false) {
 			player[i].is_alive = true;
 			player[i].hasitem = false;
+			buhwal[i] = i;
 			survive_p[cnt_t] = i;
 			cnt_t++;
 			n_alive++;
@@ -74,14 +76,22 @@ void juldarigi_init(void) { //맵크기 설정, 죽은애 부활, 플레이어 위치 설정, 줄 �
 	nupgi_turns = 0;
 }
 
+void print_str() {
+	for (int i = 0; i < N_COL; i++) {
+		printxy(' ', i, 5);
+	}
+	gotoxy(0, 5);
+	printf("str :	%.2f\n", str);
+}
+
 void p_str() { //str 계산
 	double lt_str = 0, rt_str = 0;
 	for (int i = 0; i < n_player; i++) {
 		if (i % 2 == 0 && player[i].is_alive) {
-			lt_str += player[i].str;
+			lt_str = lt_str + ((player[i].str + player[i].item.str_buf) * (player[i].stamina / 100.0));
 		}
 		else if (i % 2 != 0 && player[i].is_alive) {
-			rt_str += player[i].str;
+			rt_str = rt_str + ((player[i].str + player[i].item.str_buf) * (player[i].stamina / 100.0));
 		}
 	}
 	str = -lt_str + rt_str;
@@ -123,9 +133,11 @@ void after_nupgi() { //눕기 한 후 초기화시키기
 	for (int i = 0; i < n_player; i++) {
 		if (nu == 1 && i % 2 == 0) {
 			player[i].str = player[i].str / 2;
+			player[i].stamina *= 0.7;
 		}
 		else if (nu == 2 && i % 2 != 0) {
 			player[i].str = player[i].str / 2;
+			player[i].stamina *= 0.7;
 		}
 	}
 	nu = 0;
@@ -136,32 +148,37 @@ int keytrue = 0;
 void countkey() { // 연타 코드
 	while (1) {
 		if (_kbhit()) {
+			keytrue = 1;
 			char key = _getch();
 
-			if (key == 'z') {
+			if (key == 'z' && keytrue == 1) {
 				str -= 1;
-				for (int i = 0; i < N_COL; i++) {
-					printxy(' ', i, 5);
-				}
-				gotoxy(0, 5);
-				printf("str :	%.2f\n", str);
+				print_str();
 			}
-			else if (key == '/') {
+			else if (key == '/' && keytrue == 1) {
 				str += 1;
-				for (int i = 0; i < N_COL; i++) {
-					printxy(' ', i, 5);
-				}
-				gotoxy(0, 5);
-				printf("str :	%.2f\n", str);
+				print_str();
 			}
-			keytrue = 1;
+			Sleep(200);
 		}
-		Sleep(400);
 		if (!_kbhit()) {
 			break;
 		}
 	}
 	return;
+}
+
+char lastKey = '\0';
+int last_key() {
+	if (lastKey == 'z') {
+		str -= 1;
+		print_str();
+	}
+	else if (lastKey == '/') {
+		str += 1;
+		print_str();
+	}
+	lastKey = '\0';
 }
 
 int turn = 1;
@@ -171,11 +188,8 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 	before_str = str;
 	int nx, ny;
 	p_str(); //str계산하기
-	for (int i = 0; i < N_COL; i++) {
-		printxy(' ', i, 5);
-	}
-	gotoxy(0, 5);
-	printf("str :	%.2f\n", str);
+	print_str();
+	Sleep(500);
 	countkey(); //만약 연타할거면
 	Sleep(1000); //1초 대기
 	for (int i = 0; i < n_player; i++) { //플레이어 움직이게하기, nu, nupgi_turns은 눕기 했을때 2칸 움직이기
@@ -186,6 +200,9 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 			if (nu == 2 && nupgi_turns == 1) {
 				nx = px[p] + 2;
 			}
+			else if (nu == 1 && nupgi_turns == 1) {
+				nx = px[p] + 1;
+			}
 			move_player(p, nx, ny);
 		}
 		else if (str < 0) {
@@ -194,6 +211,14 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 			if (nu == 1 && nupgi_turns == 1) {
 				nx = px[p] - 2;
 			}
+			else if (nu == 2 && nupgi_turns == 1) {
+				nx = px[p] - 1;
+			}
+			move_player(p, nx, ny);
+		}
+		else if (str == 0) {
+			nx = px[p];
+			ny = py[p];
 			move_player(p, nx, ny);
 		}
 		if ((p % 2 == 0 && px[p] >= 15) || (p % 2 != 0 && px[p] <= 15)) { //죽어야 하는 경우
@@ -251,13 +276,6 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 						move_player(i, nx, ny);
 					}
 				}
-				/*else if (nup_die == 2) {
-					if (i % 2 != 0) {
-						nx = px[i] - 1;
-						ny = 1;
-						move_player(i, nx, ny);
-					}
-				}*/
 			}
 		}
 		else if (nup2_die != 0 && nu != 0) {//눕기 눌러서 누구 죽었을때 상대방 안움직이게 하기 x눌렀을때
@@ -276,13 +294,6 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 						move_player(i, nx, ny);
 					}
 				}
-				/*else if (nup2_die == 2) {
-					if (i % 2 == 0) {
-						nx = px[i] + 1;
-						ny = 1;
-						move_player(i, nx, ny);
-					}
-				}*/
 			}
 		}
 		if (nup_die != 0 && nu != 0) {
@@ -346,16 +357,29 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 			d = j;
 			dx = hx[j] + moveAmount;
 			dy = hy[j];
-			if (nu != 0 && nupgi_turns == 1) {
+			if (nu == 1) {
 				if (str > 0) {
-					dx += 1;
+					dx = dx;
 				}
 				else if (str < 0) {
 					dx -= 1;
 				}
 			}
+			else if (nu == 2) {
+				if (str > 0) {
+					dx += 1;
+				}
+				else if (str < 0) {
+					dx = dx;
+				}
+			}
+			if (str == 0) {
+				dx = hx[j];
+				dy = hy[j];
+			}
 			move_dash(dx, dy, j);
 		}
+		//last_key();
 	}
 	dash_print();
 	player_print();
@@ -365,11 +389,15 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 	if (nu != 0 && nupgi_turns == 1) { //눕기 턴 초기화
 		after_nupgi();
 		str = before_str;
-		for (int i = 0; i < N_COL; i++) {
-			printxy(' ', i, 5);
+	}
+}
+
+void star_bu() {
+	for (int i = 0; i < n_player; i++) {
+		if (i == buhwal[i]) {
+			gotoxy(16, 9 + i);
+			printf("*");
 		}
-		gotoxy(0, 5);
-		printf("str :	%.2f\n", str);
 	}
 }
 
@@ -386,6 +414,7 @@ int juldarigi(void) {
 	gotoxy(0, 5);
 	printf("str :	%.2f", str);
 	printf("\n");
+	star_bu();
 	while (1) {
 		Sleep(500);
 		if (_kbhit()) {
@@ -399,7 +428,7 @@ int juldarigi(void) {
 					if (key == '.') {
 						for (int i = 0; i < n_player; i++) {
 							player[i].str *= 2;
-							player[i].stamina *= 0.7;
+							//player[i].stamina *= 0.7;
 						}
 						gotoxy(0, 4);
 						printf("양쪽팀이 함께 눕기를 사용했습니다.\n");
@@ -411,7 +440,6 @@ int juldarigi(void) {
 					for (int i = 0; i < n_player; i++) {
 						if (i % 2 == 0 && player[i].stamina > 0) {
 							player[i].str *= 2;
-							player[i].stamina *= 0.7;
 						}
 						else if (i % 2 == 0 && player[i].stamina < 0) {
 							ifff = 1;
@@ -435,7 +463,6 @@ int juldarigi(void) {
 					if (key == 'x') {
 						for (int i = 0; i < n_player; i++) {
 							player[i].str *= 2;
-							player[i].stamina *= 0.7;
 						}
 						gotoxy(0, 4);
 						printf("양쪽팀이 함께 눕기를 사용했습니다.\n");
@@ -447,7 +474,7 @@ int juldarigi(void) {
 					for (int i = 1; i < n_player; i++) {
 						if (i % 2 != 0 && player[i].stamina > 0) {
 							player[i].str *= 2;
-							player[i].stamina *= 0.7;
+
 						}
 						else if (i % 2 != 0 && player[i].stamina < 0) {
 							ifff = 1;
@@ -464,18 +491,11 @@ int juldarigi(void) {
 			}
 		}
 		display();
-		for (int i = 0; i < N_COL; i++) {
-			printxy(' ', i, 5);
-		}
-		gotoxy(0, 5);
-		printf("str :	%.2f\n", str);
+		star_bu();
+		print_str();
 		play_juldarigi();
 		display();
-		for (int i = 0; i < N_COL; i++) {
-			printxy(' ', i, 5);
-		}
-		gotoxy(0, 5);
-		printf("str :	%.2f\n", str);
+		star_bu();
 		Sleep(500);
 		if (di == 1) {
 			if (num_dead_player == 1) {
@@ -486,15 +506,11 @@ int juldarigi(void) {
 			}
 			di = 0;
 			num_dead_player = 0;
+			int keyPressed = 0;
 			Sleep(200);
 		}
 		if (keytrue == 1) {
 			str = before_str;
-			for (int i = 0; i < N_COL; i++) {
-				printxy(' ', i, 5);
-			}
-			gotoxy(0, 5);
-			printf("str :	%.2f\n", str);
 			keytrue = 0;
 		}
 		int allEvenDead = 1; // 짝수 애들 죽었는지 확인할 코드
@@ -512,13 +528,19 @@ int juldarigi(void) {
 		if (allEvenDead || allOddDead) { //처음에 살았었던 애 죽은거 다시 살리고, 아이템 없애고 힘,지능 절반 하락 후 줄다리기 종료
 			for (int i = 0; i < n_player; i++) {
 				if (player[i].is_alive == false) {
-					if (i == buhwal[i]) {
+					if (i == not_buhwal[i]) {
 						player[i].is_alive = true;
 						player[i].str = player[i].str / 2;
 						player[i].intel = player[i].intel / 2;
 						player[i].hasitem = false;
 					}
 				}
+				/*if (player[i].stamina < 100) {
+					player[i].stamina= player[i].stamina+ 40;
+					if (player[i].stamina >= 100) {
+						player[i].stamina = 100;
+					}
+				}*/
 			}
 			break;
 		}
