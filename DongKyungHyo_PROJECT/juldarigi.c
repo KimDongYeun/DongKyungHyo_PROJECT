@@ -25,13 +25,17 @@ int num_dead_player = 0;
 int rt_alive = 0; lt_alive = 0;
 
 void juldarigi_init();
+void print_str();
 void p_str();
 void move_player();
 void move_dash();
 void player_print();
 void dash_print();
 void after_nupgi();
+void countkey();
 void play_juldarigi();
+void star_bu();
+int juldarigi();
 
 void juldarigi_init(void) { //맵크기 설정, 죽은애 부활, 플레이어 위치 설정, 줄 위치 설정
 	map_init(3, 32);
@@ -168,19 +172,6 @@ void countkey() { // 연타 코드
 	return;
 }
 
-char lastKey = '\0';
-int last_key() {
-	if (lastKey == 'z') {
-		str -= 1;
-		print_str();
-	}
-	else if (lastKey == '/') {
-		str += 1;
-		print_str();
-	}
-	lastKey = '\0';
-}
-
 int turn = 1;
 int nup_die = 0;
 int nup2_die = 0;
@@ -189,7 +180,7 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 	int nx, ny;
 	p_str(); //str계산하기
 	print_str();
-	Sleep(500);
+	Sleep(800);
 	countkey(); //만약 연타할거면
 	Sleep(1000); //1초 대기
 	for (int i = 0; i < n_player; i++) { //플레이어 움직이게하기, nu, nupgi_turns은 눕기 했을때 2칸 움직이기
@@ -379,7 +370,6 @@ void play_juldarigi() { //게임돌아가는 진짜 코드
 			}
 			move_dash(dx, dy, j);
 		}
-		//last_key();
 	}
 	dash_print();
 	player_print();
@@ -428,7 +418,6 @@ int juldarigi(void) {
 					if (key == '.') {
 						for (int i = 0; i < n_player; i++) {
 							player[i].str *= 2;
-							//player[i].stamina *= 0.7;
 						}
 						gotoxy(0, 4);
 						printf("양쪽팀이 함께 눕기를 사용했습니다.\n");
