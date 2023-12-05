@@ -53,6 +53,10 @@ void jebi_init(void) {
 			cntt++;
 		}
 	}
+	for (int i = 0; i < cntt; i++) {
+		player[survive_player[i]].stamina += 50;
+		if (player[survive_player[i]].stamina > 100) { player[survive_player[i]].stamina = 100; }
+	}
 	round_j_num = cntt;
 	for (int i = 0; i < cntt; i++) {
 		y = 2;
