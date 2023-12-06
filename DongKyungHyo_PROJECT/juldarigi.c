@@ -23,6 +23,7 @@ int not_buhwal[19] = { 0 }; //기존에 계속 생존해 있던 플레이어 저장할거
 int buhwal[19] = { -1 };
 int num_dead_player = 0;
 int rt_alive = 0; lt_alive = 0;
+int ticktick = 0;
 
 void juldarigi_init();
 void print_str();
@@ -32,7 +33,6 @@ void move_dash();
 void player_print();
 void dash_print();
 void after_nupgi();
-void countkey();
 void play_juldarigi();
 void star_bu();
 int juldarigi();
@@ -149,28 +149,6 @@ void after_nupgi() { //눕기 한 후 초기화시키기
 }
 
 int keytrue = 0;
-void countkey() { // 연타 코드
-	while (1) {
-		if (_kbhit()) {
-			keytrue = 1;
-			char key = _getch();
-
-			if (key == 'z' && keytrue == 1) {
-				str -= 1;
-				print_str();
-			}
-			else if (key == '/' && keytrue == 1) {
-				str += 1;
-				print_str();
-			}
-			Sleep(200);
-		}
-		if (!_kbhit()) {
-			break;
-		}
-	}
-	return;
-}
 
 int turn = 1;
 int nup_die = 0;
@@ -178,207 +156,206 @@ int nup2_die = 0;
 void play_juldarigi() { //게임돌아가는 진짜 코드
 	before_str = str;
 	int nx, ny;
-	p_str(); //str계산하기
-	print_str();
-	Sleep(800);
-	countkey(); //만약 연타할거면
-	Sleep(1000); //1초 대기
-	for (int i = 0; i < n_player; i++) { //플레이어 움직이게하기, nu, nupgi_turns은 눕기 했을때 2칸 움직이기
-		p = i;
-		if (str > 0) {
-			nx = px[p] + 1;
-			ny = py[p];
-			if (nu == 2 && nupgi_turns == 1) {
-				nx = px[p] + 2;
-			}
-			else if (nu == 1 && nupgi_turns == 1) {
+	if (ticktick % 1000 == 0) {
+		for (int i = 0; i < n_player; i++) { //플레이어 움직이게하기, nu, nupgi_turns은 눕기 했을때 2칸 움직이기
+			p = i;
+			if (str > 0) {
 				nx = px[p] + 1;
+				ny = py[p];
+				if (nu == 2 && nupgi_turns == 1) {
+					nx = px[p] + 2;
+				}
+				else if (nu == 1 && nupgi_turns == 1) {
+					nx = px[p] + 1;
+				}
+				move_player(p, nx, ny);
 			}
-			move_player(p, nx, ny);
-		}
-		else if (str < 0) {
-			nx = px[p] - 1;
-			ny = py[p];
-			if (nu == 1 && nupgi_turns == 1) {
-				nx = px[p] - 2;
-			}
-			else if (nu == 2 && nupgi_turns == 1) {
+			else if (str < 0) {
 				nx = px[p] - 1;
+				ny = py[p];
+				if (nu == 1 && nupgi_turns == 1) {
+					nx = px[p] - 2;
+				}
+				else if (nu == 2 && nupgi_turns == 1) {
+					nx = px[p] - 1;
+				}
+				move_player(p, nx, ny);
 			}
-			move_player(p, nx, ny);
-		}
-		else if (str == 0) {
-			nx = px[p];
-			ny = py[p];
-			move_player(p, nx, ny);
-		}
-		if ((p % 2 == 0 && px[p] >= 15) || (p % 2 != 0 && px[p] <= 15)) { //죽어야 하는 경우
-			if (player[p].is_alive) {
-				if (p % 2 == 0) { //오른쪽 애 죽었을때
-					diee = 1;
-				}
-				else if (p % 2 != 0) { //왼쪽애 죽었을때
-					diee = 2;
-				}
-				di = 1;
-				back_buf[1][15] = ' ';
-				out_player_jul[out_p + num_dead_player] = '0' + i;
-				player[p].is_alive = false;
-				num_dead_player++;
-				n_alive -= 1;
-				if (p % 2 == 0 && nu != 0) {
-					nup_die += 1;
-					lt_alive -= 1;
+			else if (str == 0) {
+				nx = px[p];
+				ny = py[p];
+				move_player(p, nx, ny);
+			}
+			if ((p % 2 == 0 && px[p] >= 15) || (p % 2 != 0 && px[p] <= 15)) { //죽어야 하는 경우
+				if (player[p].is_alive) {
+					if (p % 2 == 0) { //오른쪽 애 죽었을때
+						diee = 1;
+					}
+					else if (p % 2 != 0) { //왼쪽애 죽었을때
+						diee = 2;
+					}
+					di = 1;
+					back_buf[1][15] = ' ';
+					out_player_jul[out_p + num_dead_player] = '0' + i;
+					player[p].is_alive = false;
+					num_dead_player++;
+					n_alive -= 1;
+					if (p % 2 == 0 && nu != 0) {
+						nup_die += 1;
+						lt_alive -= 1;
 
-				}
-				else if (p % 2 != 0 && nu != 0) {
-					nup2_die += 1;
-					rt_alive -= 1;
+					}
+					else if (p % 2 != 0 && nu != 0) {
+						nup2_die += 1;
+						rt_alive -= 1;
+					}
 				}
 			}
 		}
-	}
-	if (diee == 1 || diee == 2) { //죽었을때 상대편 안움직이게 할 코드
-		for (int i = 0; i < n_player; i++) {
-			if (i % 2 == 0 && diee == 2) {
-				nx = px[i] + 1;
-				ny = 1;
-				move_player(i, nx, ny);
-			}
-			else if (i % 2 != 0 && diee == 1) {
-				nx = px[i] - 1;
-				ny = 1;
-				move_player(i, nx, ny);
-			}
-		}
-		if (nup_die != 0 && nu != 0) { //눕기 눌러서 누구 죽었을때 상대방 안움직이게 하기 .눌렀을때
+		if (diee == 1 || diee == 2) { //죽었을때 상대편 안움직이게 할 코드
 			for (int i = 0; i < n_player; i++) {
-				if (nup_die == 1 && lt_alive >= 2) {
-					if (i % 2 != 0) {
-						nx = px[i];
-						ny = 1;
-						move_player(i, nx, ny);
-					}
+				if (i % 2 == 0 && diee == 2) {
+					nx = px[i] + 1;
+					ny = 1;
+					move_player(i, nx, ny);
 				}
-				else if ((nup_die == 1 && lt_alive == 0) || nup_die == 2) {
-					if (i % 2 != 0) {
-						nx = px[i] - 1;
-						ny = 1;
-						move_player(i, nx, ny);
-					}
+				else if (i % 2 != 0 && diee == 1) {
+					nx = px[i] - 1;
+					ny = 1;
+					move_player(i, nx, ny);
 				}
 			}
-		}
-		else if (nup2_die != 0 && nu != 0) {//눕기 눌러서 누구 죽었을때 상대방 안움직이게 하기 x눌렀을때
-			for (int i = 0; i < n_player; i++) {
-				if (nup2_die == 1 && rt_alive >= 2) {
-					if (i % 2 == 0) {
-						nx = px[i];
-						ny = 1;
-						move_player(i, nx, ny);
+			if (nup_die != 0 && nu != 0) { //눕기 눌러서 누구 죽었을때 상대방 안움직이게 하기 .눌렀을때
+				for (int i = 0; i < n_player; i++) {
+					if (nup_die == 1 && lt_alive >= 2) {
+						if (i % 2 != 0) {
+							nx = px[i];
+							ny = 1;
+							move_player(i, nx, ny);
+						}
 					}
-				}
-				else if ((nup2_die == 1 && rt_alive == 0) || nup2_die == 2) {
-					if (i % 2 == 0) {
-						nx = px[i] + 1;
-						ny = 1;
-						move_player(i, nx, ny);
+					else if ((nup_die == 1 && lt_alive == 0) || nup_die == 2) {
+						if (i % 2 != 0) {
+							nx = px[i] - 1;
+							ny = 1;
+							move_player(i, nx, ny);
+						}
 					}
 				}
 			}
-		}
-		if (nup_die != 0 && nu != 0) {
-			for (int i = 0; i < 3; i++) {
-				if (nup_die == 1) {
-					dx = 15 + i;
-					dy = 1;
-					move_dash(dx, dy, i);
-					dash_print();
+			else if (nup2_die != 0 && nu != 0) {//눕기 눌러서 누구 죽었을때 상대방 안움직이게 하기 x눌렀을때
+				for (int i = 0; i < n_player; i++) {
+					if (nup2_die == 1 && rt_alive >= 2) {
+						if (i % 2 == 0) {
+							nx = px[i];
+							ny = 1;
+							move_player(i, nx, ny);
+						}
+					}
+					else if ((nup2_die == 1 && rt_alive == 0) || nup2_die == 2) {
+						if (i % 2 == 0) {
+							nx = px[i] + 1;
+							ny = 1;
+							move_player(i, nx, ny);
+						}
+					}
 				}
-				else if (nup_die == 2) {
-					dx = 15 + i;
-					dy = 1;
-					move_dash(dx, dy, i);
+			}
+			if (nup_die != 0 && nu != 0) {
+				for (int i = 0; i < 3; i++) {
+					if (nup_die == 1) {
+						dx = 15 + i;
+						dy = 1;
+						move_dash(dx, dy, i);
+						dash_print();
+					}
+					else if (nup_die == 2) {
+						dx = 15 + i;
+						dy = 1;
+						move_dash(dx, dy, i);
+						dash_print();
+					}
+				}
+				nup_die = 0;
+			}
+			else if (nup2_die != 0 && nu != 0) {
+				for (int i = 0; i < 3; i++) {
+					if (nup2_die == 1) {
+						dx = 13 + i;
+						dy = 1;
+						move_dash(dx, dy, i);
+						dash_print();
+					}
+					else if (nup2_die == 2) {
+						dx = 13 + i;
+						dy = 1;
+						move_dash(dx, dy, i);
+						dash_print();
+					}
+				}
+			}
+			else {
+				for (int j = 0; j < 3; j++) { //죽었을때 줄 안움직이게 하는 코드
+					d = j;
+					if (nu != 0 && nupgi_turns == 1) {
+						if (nu == 1) {
+							dx = hx[j] - 2;
+							dy = 1;
+						}
+						else if (nu == 2) {
+							dx = hx[j] + 2;
+							dy = 1;
+						}
+					}
+					else {
+						dx = hx[j];
+						dy = 1;
+					}
+					move_dash(dx, dy, j);
 					dash_print();
 				}
 			}
-			nup_die = 0;
 		}
-		else if (nup2_die != 0 && nu != 0) {
-			for (int i = 0; i < 3; i++) {
-				if (nup2_die == 1) {
-					dx = 13 + i;
-					dy = 1;
-					move_dash(dx, dy, i);
-					dash_print();
-				}
-				else if (nup2_die == 2) {
-					dx = 13 + i;
-					dy = 1;
-					move_dash(dx, dy, i);
-					dash_print();
-				}
-			}
-		}
-		else {
-			for (int j = 0; j < 3; j++) { //죽었을때 줄 안움직이게 하는 코드
+		else { //죽은애 없을때 줄 움직이게 하는 코드
+			int moveAmount = (str > 0) ? 1 : -1;
+			for (int j = 0; j < 3; j++) {
 				d = j;
-				if (nu != 0 && nupgi_turns == 1) {
-					if (nu == 1) {
-						dx = hx[j] - 2;
-						dy = 1;
+				dx = hx[j] + moveAmount;
+				dy = hy[j];
+				if (nu == 1) {
+					if (str > 0) {
+						dx = dx;
 					}
-					else if (nu == 2) {
-						dx = hx[j] + 2;
-						dy = 1;
+					else if (str < 0) {
+						dx -= 1;
 					}
 				}
-				else {
+				else if (nu == 2) {
+					if (str > 0) {
+						dx += 1;
+					}
+					else if (str < 0) {
+						dx = dx;
+					}
+				}
+				if (str == 0) {
 					dx = hx[j];
-					dy = 1;
+					dy = hy[j];
 				}
 				move_dash(dx, dy, j);
-				dash_print();
 			}
 		}
-	}
-	else { //죽은애 없을때 줄 움직이게 하는 코드
-		int moveAmount = (str > 0) ? 1 : -1;
-		for (int j = 0; j < 3; j++) {
-			d = j;
-			dx = hx[j] + moveAmount;
-			dy = hy[j];
-			if (nu == 1) {
-				if (str > 0) {
-					dx = dx;
-				}
-				else if (str < 0) {
-					dx -= 1;
-				}
-			}
-			else if (nu == 2) {
-				if (str > 0) {
-					dx += 1;
-				}
-				else if (str < 0) {
-					dx = dx;
-				}
-			}
-			if (str == 0) {
-				dx = hx[j];
-				dy = hy[j];
-			}
-			move_dash(dx, dy, j);
+		dash_print();
+		player_print();
+		diee = 0;
+		nup_die = 0;
+		nup2_die = 0;
+		if (nu != 0 && nupgi_turns == 1) { //눕기 턴 초기화
+			after_nupgi();
+			str = before_str;
 		}
-	}
-	dash_print();
-	player_print();
-	diee = 0;
-	nup_die = 0;
-	nup2_die = 0;
-	if (nu != 0 && nupgi_turns == 1) { //눕기 턴 초기화
-		after_nupgi();
-		str = before_str;
+		p_str(); //str계산하기
+		print_str();
 	}
 }
 
@@ -406,7 +383,6 @@ int juldarigi(void) {
 	printf("\n");
 	star_bu();
 	while (1) {
-		Sleep(500);
 		if (_kbhit()) {
 			int key = _getch();
 			if (key == 'q') { break; }
@@ -478,14 +454,22 @@ int juldarigi(void) {
 				}
 				nupgi_turns = 1;
 			}
+			else if (key == 'z') {
+				keytrue = 1;
+				str -= 1;
+				print_str();
+			}
+			else if (key == '/') {
+				keytrue = 1;
+				str += 1;
+				print_str();
+			}
 		}
 		display();
 		star_bu();
-		print_str();
 		play_juldarigi();
 		display();
 		star_bu();
-		Sleep(500);
 		if (di == 1) {
 			if (num_dead_player == 1) {
 				dialog_juldarigi("player", "dead!", out_player_jul, 1);
@@ -496,7 +480,6 @@ int juldarigi(void) {
 			di = 0;
 			num_dead_player = 0;
 			int keyPressed = 0;
-			Sleep(200);
 		}
 		if (keytrue == 1) {
 			str = before_str;
@@ -533,6 +516,8 @@ int juldarigi(void) {
 			}
 			break;
 		}
+		Sleep(10);
+		ticktick += 10;
 	}
 	return 0;
 }
