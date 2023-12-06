@@ -24,6 +24,9 @@ int buhwal[19] = { -1 };
 int num_dead_player = 0;
 int rt_alive = 0; lt_alive = 0;
 int ticktick = 0;
+double lt_str = 0, rt_str = 0;
+int l_nup = 0;
+int r_nup = 0;
 
 void juldarigi_init();
 void print_str();
@@ -89,7 +92,7 @@ void print_str() {
 }
 
 void p_str() { //str 계산
-	double lt_str = 0, rt_str = 0;
+	lt_str = 0, rt_str = 0;
 	for (int i = 0; i < n_player; i++) {
 		if (i % 2 == 0 && player[i].is_alive) {
 			lt_str = lt_str + ((player[i].str + player[i].item.str_buf) * (player[i].stamina / 100.0));
@@ -134,18 +137,26 @@ void after_nupgi() { //눕기 한 후 초기화시키기
 	for (int i = 0; i < COL_MAX; i++) {
 		printxy(' ', i, 4);
 	}
-	for (int i = 0; i < n_player; i++) {
-		if (nu == 1 && i % 2 == 0) {
-			player[i].str = player[i].str / 2;
-			player[i].stamina *= 0.7;
+		if (nu == 1) {
+			for (int i = 0; i < n_player; i += 2) {
+				player[i].stamina -= 30;
+				if (player[i].stamina < 0) {
+					player[i].stamina = 0;
+				}
+			}
 		}
-		else if (nu == 2 && i % 2 != 0) {
-			player[i].str = player[i].str / 2;
-			player[i].stamina *= 0.7;
+		else if (nu == 2) {
+			for (int i = 1; i < n_player; i+=2) {
+				player[i].stamina -= 30;
+				if (player[i].stamina < 0) {
+					player[i].stamina = 0;
+				}
+			}
 		}
-	}
 	nu = 0;
 	nupgi_turns = 0;
+	l_nup = 0;
+	r_nup = 0;
 }
 
 int keytrue = 0;
@@ -368,8 +379,7 @@ void star_bu() {
 	}
 }
 
-int x_pressed = 0;
-int dot_pressed = 0;
+
 int juldarigi(void) {
 	juldarigi_init();
 	system("cls");
@@ -387,72 +397,30 @@ int juldarigi(void) {
 			int key = _getch();
 			if (key == 'q') { break; }
 			else if (key == 'x') {
-				int ifff = 0;
-				nu = 1;
-				if (_kbhit()) {
-					key = _getch();
-					if (key == '.') {
-						for (int i = 0; i < n_player; i++) {
-							player[i].str *= 2;
-						}
-						gotoxy(0, 4);
-						printf("양쪽팀이 함께 눕기를 사용했습니다.\n");
-					}
-				}
-				else {
+				if (l_nup == 0) {
+					int ifff = 0;
+					nu = 1;
 					gotoxy(0, 4);
 					printf("왼쪽 팀이 눕기를 사용했습니다.\n");
-					for (int i = 0; i < n_player; i++) {
-						if (i % 2 == 0 && player[i].stamina > 0) {
-							player[i].str *= 2;
-						}
-						else if (i % 2 == 0 && player[i].stamina < 0) {
-							ifff = 1;
-						}
-					}
-					if (ifff == 1) {
-						gotoxy(0, 4);
-						printf("왼쪽팀 체력 부족으로 눕기 실패.\n");
-						ifff = 0;
-						nu = 0;
-					}
+					lt_str *= 2;
+					str = -lt_str + rt_str;
+					print_str();
+					nupgi_turns = 1;
+					l_nup = 1;
 				}
-				nupgi_turns = 1;
-				x_pressed = 1;
 			}
 			else if (key == '.') {
-				int ifff = 0;
-				nu = 2;
-				if (_kbhit()) {
-					key = _getch();
-					if (key == 'x') {
-						for (int i = 0; i < n_player; i++) {
-							player[i].str *= 2;
-						}
-						gotoxy(0, 4);
-						printf("양쪽팀이 함께 눕기를 사용했습니다.\n");
-					}
-				}
-				else {
+				if (r_nup == 0) {
+					int ifff = 0;
+					nu = 2;
 					gotoxy(0, 4);
 					printf("오른쪽 팀이 눕기를 사용했습니다.\n");
-					for (int i = 1; i < n_player; i++) {
-						if (i % 2 != 0 && player[i].stamina > 0) {
-							player[i].str *= 2;
-
-						}
-						else if (i % 2 != 0 && player[i].stamina < 0) {
-							ifff = 1;
-						}
-					}
-					if (ifff == 1) {
-						gotoxy(0, 4);
-						printf("오른쪽팀 체력 부족으로 눕기 실패.\n");
-						ifff = 0;
-						nu = 0;
-					}
+					rt_str *= 2;
+					str = -lt_str + rt_str;
+					print_str();
+					nupgi_turns = 1;
+					r_nup = 1;
 				}
-				nupgi_turns = 1;
 			}
 			else if (key == 'z') {
 				keytrue = 1;
@@ -479,7 +447,6 @@ int juldarigi(void) {
 			}
 			di = 0;
 			num_dead_player = 0;
-			int keyPressed = 0;
 		}
 		if (keytrue == 1) {
 			str = before_str;
